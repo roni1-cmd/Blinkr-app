@@ -16,6 +16,83 @@
       padding: 20px;
     }
 
+    /* Password Prompt */
+    .password-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .password-box {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    .password-box input {
+      padding: 10px;
+      font-size: 1.2em;
+      border: 2px solid #ff4d4d;
+      border-radius: 5px;
+      outline: none;
+      margin-bottom: 15px;
+      width: 100%;
+      animation: shake 0.5s ease-in-out;
+    }
+
+    .password-box input:focus {
+      border-color: #cc0000;
+    }
+
+    .password-box button {
+      padding: 10px 20px;
+      background: #ff4d4d;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 1.2em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .password-box button:hover {
+      background: #cc0000;
+    }
+
+    .error-message {
+      color: red;
+      font-size: 1.2em;
+      display: none;
+      margin-top: 10px;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      50% { transform: translateX(10px); }
+      75% { transform: translateX(-10px); }
+      100% { transform: translateX(0); }
+    }
+
+    /* Main content */
     .container {
       max-width: 800px;
       margin: auto;
@@ -25,6 +102,7 @@
       border-radius: 20px;
       position: relative;
       overflow: hidden;
+      display: none;
     }
 
     .container::before {
@@ -90,25 +168,6 @@
     .choices button:hover {
       background: #cc0000;
       transform: scale(1.1);
-    }
-
-    .thrill-message {
-      display: none;
-      font-size: 1.2em;
-      color: #b30000;
-      margin-top: 20px;
-      animation: fadeIn 1s ease-in-out;
-      z-index: 1;
-      position: relative;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
     }
 
     .letter {
@@ -188,7 +247,16 @@
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="password-container" id="password-container">
+    <div class="password-box">
+      <h2>Enter Password</h2>
+      <input type="password" id="password" placeholder="Enter password...">
+      <button onclick="validatePassword()">Submit</button>
+      <p id="error-message" class="error-message">Lol sayop imo pass, wa kay kiss nako hahaha. Hilak sa ko</p>
+    </div>
+  </div>
+
+  <div class="container" id="main-container">
     <div class="snowflakes">
       <div class="snowflake">❄️</div>
       <div class="snowflake">❄️</div>
@@ -197,8 +265,8 @@
       <div class="snowflake">❄️</div>
     </div>
 
-    <h1>Merry Christmas, Shiera Mae Hagonoy aodkaksl ksksksksk! 🎄</h1>
-    <p class="subtitle">The holiday magic is here (eheheh)! Pili ug gift, usa-usaha ha? bantay ka lang nako gyud shiera mae</p>
+    <h1>Merry Christmas, Shiera Mae Hagonoy! 🎄</h1>
+    <p class="subtitle">The holiday magic is here (heheheheh)! Pili ha usa usaha ra dapat kay gwapa kayka (ko) </p>
 
     <div class="choices">
       <button onclick="confirmChoice('A')">🎁 Pilion ni nimo or ako?</button>
@@ -215,6 +283,20 @@
   </footer>
 
   <script>
+    function validatePassword() {
+      const password = document.getElementById('password').value;
+      const errorMessage = document.getElementById('error-message');
+      const passwordContainer = document.getElementById('password-container');
+      const mainContainer = document.getElementById('main-container');
+
+      if (password === 'gwaporoni') {
+        passwordContainer.style.display = 'none';
+        mainContainer.style.display = 'block';
+      } else {
+        errorMessage.style.display = 'block';
+      }
+    }
+
     function confirmChoice(choice) {
       const thrillMessage = document.getElementById('thrill-message');
       const letterDiv = document.getElementById('letter');
@@ -255,8 +337,7 @@
           break;
         case 'B':
           message = `
-            <strong>To shiera mae (again),</strong><br>
-            Just like the snowflakes that gently fall from the sky, you’ve brought beauty and peace into my world. This Christmas, I’m reminded of how truly special you are to me. Pero sultian tika, ga english ra jud ko sa una para ma feel nimo ba nga naa pud koy umoy pagkatawo (eme eme ra na) pero sige lang, love man pud tika, diba? Unta di ka mapul-an ug ing-ani ani kay mapuno kag ing ana-ana, kaysa buhatan tikag Google Forms oh diba ka jema
+           Just like the snowflakes that gently fall from the sky, you’ve brought beauty and peace into my world. This Christmas, I’m reminded of how truly special you are to me. Pero sultian tika, ga english ra jud ko sa una para ma feel nimo ba nga naa pud koy umoy pagkatawo (eme eme ra na) pero sige lang, love man pud tika, diba? Unta di ka mapul-an ug ing-ani ani kay mapuno kag ing ana-ana, kaysa buhatan tikag Google Forms oh diba ka jema
             <br><br>
             My heart is yours, wrapped in love and tied with a bow. Here’s to many more holiday seasons spent in your warmth. Love you forever! ❄️❤️`;
           break;
