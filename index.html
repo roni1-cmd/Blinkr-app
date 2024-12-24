@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blinkr - Messaging App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --gradient-start: #4a00e0;
+            --gradient-end: #8e2de2;
+            --text-color: #ffffff;
+            --input-bg: rgba(255, 255, 255, 0.1);
+            --input-border: rgba(255, 255, 255, 0.2);
+            --button-bg: #ffffff;
+            --button-text: #4a00e0;
+            --error-color: #ff6b6b;
+            --success-color: #51cf66;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .left-section, .right-section {
+            flex: 1;
+            padding: 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .left-section {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .brand h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+        }
+
+        .brand p {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .form-header h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-header p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 30px;
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--text-color);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+        }
+
+        .input-group label {
+            position: absolute;
+            left: 1.5rem;
+            top: 1rem;
+            color: var(--text-color);
+            opacity: 0.7;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus ~ label,
+        .input-group input:not(:placeholder-shown) ~ label {
+            transform: translateY(-2.5rem) scale(0.8);
+            opacity: 1;
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .remember-me input[type="checkbox"] {
+            accent-color: var(--text-color);
+        }
+
+        .forgot-password {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .forgot-password:hover {
+            opacity: 0.8;
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: var(--button-bg);
+            border: none;
+            border-radius: 30px;
+            color: var(--button-text);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255, 255, 255, 0.13) 0%,
+                rgba(255, 255, 255, 0.13) 77%,
+                rgba(255, 255, 255, 0.5) 92%,
+                rgba(255, 255, 255, 0.0) 100%
+            );
+            transform: rotate(30deg);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        button:hover::after {
+            opacity: 1;
+        }
+
+        .switch-form {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .switch-form a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            transition: opacity 0.3s ease;
+        }
+
+        .switch-form a:hover {
+            opacity: 0.8;
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .error-message {
+            background: var(--error-color);
+        }
+
+        .success-message {
+            background: var(--success-color);
+        }
+
+        .motto {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .motto h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .motto p {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .feature {
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .left-section, .right-section {
+                padding: 3rem 2rem;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 0;
+            }
+
+            .left-section, .right-section {
+                padding: 2rem 1rem;
+            }
+        }
+
+        /* Form Switch Animation */
+        #loginForm, #signUpForm {
+            opacity: 0;
+            transform: translateX(20px);
+            transition: all 0.5s ease;
+            display: none;
+        }
+
+        #loginForm.active, #signUpForm.active {
+            opacity: 1;
+            transform: translateX(0);
+            display: block;
+        }
+
+        .floating-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border-radius: 50%;
+            animation: float 15s infinite;
+        }
+
+        .shape:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            top: 20%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+
+        .shape:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            bottom: 15%;
+            right: 10%;
+            animation-delay: 4s;
+        }
+
+        .shape:nth-child(4) {
+            width: 100px;
+            height: 100px;
+            bottom: 10%;
+            left: 15%;
+            animation-delay: 6s;
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+    <div class="container">
+        <div class="left-section">
+            <div class="brand">
+                <h1>Blinkr</h1>
+                <p>Connect instantly with friends and family</p>
+            </div>
+            <div class="form-container">
+                <div id="loginForm" class="active">
+                    <div class="form-header">
+                        <h2>Welcome Back</h2>
+                        <p>Log in to your Blinkr account</p>
+                    </div>
+                    
+                    <div class="message error-message" id="loginError"></div>
+                    <div class="message success-message" id="loginSuccess"></div>
+                    
+                    <div class="input-group">
+                        <input type="email" id="loginEmail" placeholder=" " required>
+                        <label for="loginEmail">Email Address</label>
+                    </div>
+                    
+                    <div class="input-group">
+                        <input type="password" id="loginPassword" placeholder=" " required>
+                        <label for="loginPassword">Password</label>
+                    </div>
+                    
+                    <div class="remember-forgot">
+                        <div class="remember-me">
+                            <input type="checkbox" id="remember">
+                            <label for="remember">Remember me</label>
+                        </div>
+                        <a href="#" class="forgot-password" onclick="forgotPassword()">Forgot Password?</a>
+                    </div>
+                    
+                    <button onclick="logIn()">Log In</button>
+                    
+                    <div class="switch-form">
+                        New to Blinkr?<a href="#" onclick="switchForm('signUpForm')">Create an account</a>
+                    </div>
+                </div>
+                
+                <div id="signUpForm">
+                    <div class="form-header">
+                        <h2>Create Account</h2>
+                        <p>Join the Blinkr community today</p>
+                    </div>
+                    
+                    <div class="message error-message" id="signUpError"></div>
+                    <div class="message success-message" id="signUpSuccess"></div>
+                    
+                    <div class="input-group">
+                        <input type="text" id="signUpName" placeholder=" " required>
+                        <label for="signUpName">Full Name</label>
+                    </div>
+                    
+                    <div class="input-group">
+                        <input type="email" id="signUpEmail" placeholder=" " required>
+                        <label for="signUpEmail">Email Address</label>
+                    </div>
+                    
+                    <div class="input-group">
+                        <input type="password" id="signUpPassword" placeholder=" " required>
+                        <label for="signUpPassword">Password</label>
+                    </div>
+                    
+                    <div class="input-group">
+                        <input type="password" id="signUpConfirmPassword" placeholder=" " required>
+                        <label for="signUpConfirmPassword">Confirm Password</label>
+                    </div>
+                    
+                    <button onclick="signUp()">Create Account</button>
+                    
+                    <div class="switch-form">
+                        Already have an account?<a href="#" onclick="switchForm('loginForm')">Log In</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="right-section">
+            <div class="motto">
+                <h2>Connect in a Blink</h2>
+                <p>Experience lightning-fast messaging with Blinkr</p>
+            </div>
+            <div class="features">
+                <div class="feature">
+                    <i class="fas fa-bolt"></i>
+                    <h3>Instant Messaging</h3>
+                    <p>Connect with friends and family in real-time.</p></div>
+                <div class="feature">
+                    <i class="fas fa-lock"></i>
+                    <h3>Secure Chats</h3>
+                    <p>End-to-end encryption for your privacy.</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-globe"></i>
+                    <h3>Cross-Platform</h3>
+                    <p>Use Blinkr on any device, anywhere.</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-palette"></i>
+                    <h3>Customizable</h3>
+                    <p>Personalize your chat experience with themes and stickers.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Import Firebase SDKs
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBYlU08K-1oCPcaVbkomhdYaNa3c7R3t9E",
+            authDomain: "blinkr-e2086.firebaseapp.com",
+            databaseURL: "https://blinkr-e2086-default-rtdb.firebaseio.com",
+            projectId: "blinkr-e2086",
+            storageBucket: "blinkr-e2086.firebasestorage.app",
+            messagingSenderId: "905738400420",
+            appId: "1:905738400420:web:40c9039ea3dd6a766eac31",
+            measurementId: "G-LK1KVC79FQ"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        window.logIn = function() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const errorDiv = document.getElementById('loginError');
+            const successDiv = document.getElementById('loginSuccess');
+
+            // Reset messages
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+
+            if (!email || !password) {
+                errorDiv.textContent = 'Please fill in all fields';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    successDiv.textContent = 'Login successful! Redirecting...';
+                    successDiv.style.display = 'block';
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 2000);
+                })
+                .catch((error) => {
+                    let errorMessage = 'Login failed. ';
+                    switch (error.code) {
+                        case 'auth/user-not-found':
+                            errorMessage += 'No account found with this email.';
+                            break;
+                        case 'auth/wrong-password':
+                            errorMessage += 'Incorrect password.';
+                            break;
+                        case 'auth/invalid-email':
+                            errorMessage += 'Invalid email format.';
+                            break;
+                        default:
+                            errorMessage += error.message;
+                    }
+                    errorDiv.textContent = errorMessage;
+                    errorDiv.style.display = 'block';
+                });
+        }
+
+        window.signUp = function() {
+            const name = document.getElementById('signUpName').value;
+            const email = document.getElementById('signUpEmail').value;
+            const password = document.getElementById('signUpPassword').value;
+            const confirmPassword = document.getElementById('signUpConfirmPassword').value;
+            const errorDiv = document.getElementById('signUpError');
+            const successDiv = document.getElementById('signUpSuccess');
+
+            // Reset messages
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+
+            if (!name || !email || !password || !confirmPassword) {
+                errorDiv.textContent = 'Please fill in all fields';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            if (password.length < 8) {
+                errorDiv.textContent = 'Password must be at least 8 characters long';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                errorDiv.textContent = 'Passwords do not match';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    successDiv.textContent = 'Account created successfully! Redirecting...';
+                    successDiv.style.display = 'block';
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 2000);
+                })
+                .catch((error) => {
+                    errorDiv.textContent = 'Sign up failed: ' + error.message;
+                    errorDiv.style.display = 'block';
+                });
+        }
+
+        window.forgotPassword = function() {
+            const email = document.getElementById('loginEmail').value;
+            const errorDiv = document.getElementById('loginError');
+            const successDiv = document.getElementById('loginSuccess');
+
+            // Reset messages
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+
+            if (!email) {
+                errorDiv.textContent = 'Please enter your email address';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            sendPasswordResetEmail(auth, email)
+                .then(() => {
+                    successDiv.textContent = 'Password reset email sent!';
+                    successDiv.style.display = 'block';
+                })
+                .catch((error) => {
+                    errorDiv.textContent = 'Failed to send reset email: ' + error.message;
+                    errorDiv.style.display = 'block';
+                });
+        }
+
+        window.switchForm = function(formId) {
+            const loginForm = document.getElementById('loginForm');
+            const signUpForm = document.getElementById('signUpForm');
+            
+            // Reset messages
+            document.querySelectorAll('.message').forEach(el => el.style.display = 'none');
+            
+            // Reset forms
+            document.querySelectorAll('input').forEach(input => input.value = '');
+            
+            if (formId === 'signUpForm') {
+                loginForm.classList.remove('active');
+                setTimeout(() => {
+                    loginForm.style.display = 'none';
+                    signUpForm.style.display = 'block';
+                    setTimeout(() => signUpForm.classList.add('active'), 50);
+                }, 500);
+            } else {
+                signUpForm.classList.remove('active');
+                setTimeout(() => {
+                    signUpForm.style.display = 'none';
+                    loginForm.style.display = 'block';
+                    setTimeout(() => loginForm.classList.add('active'), 50);
+                }, 500);
+            }
+        }
+    </script>
+</body>
+</html>

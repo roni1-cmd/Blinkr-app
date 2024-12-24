@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blinkr Chat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-primary: #1E1E2E;
+            --bg-secondary: #2A2A3C;
+            --text-primary: #FFFFFF;
+            --text-secondary: #A0A0A0;
+            --accent-color: #3B82F6;
+            --border-color: #3A3A4C;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 300px;
+            background-color: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-primary);
+        }
+
+        .chat-header {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-input {
+            background-color: var(--bg-secondary);
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 14px;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        button {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            border-radius: 8px;
+            margin: 0.25rem 0;
+            display: flex;
+            align-items: center;
+        }
+
+        li:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .search-container {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .rooms-container, .users-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0.5rem;
+            display: none;
+        }
+
+        .rooms-container.active, .users-container.active {
+            display: block;
+        }
+
+        .message {
+            margin-bottom: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 18px;
+            max-width: 70%;
+            word-wrap: break-word;
+            position: relative;
+            font-size: 14px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .message.sent {
+            background-color: var(--accent-color);
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .message.received {
+            background-color: var(--bg-secondary);
+            align-self: flex-start;
+        }
+
+        .message-sender {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+            font-weight: 500;
+        }
+
+        .sidebar-toggle {
+            display: none;
+            background-color: transparent;
+            color: var(--text-primary);
+            border: none;
+            padding: 0.5rem;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        .user-status {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .user-status.online {
+            background-color: #10B981;
+        }
+
+        .user-status.offline {
+            background-color: #6B7280;
+        }
+
+        .typing-indicator {
+            padding: 0.5rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            font-size: 12px;
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--accent-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: none;
+            z-index: 1000;
+            font-size: 14px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .create-room-btn {
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .edit-profile {
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-content {
+            background-color: var(--bg-secondary);
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+            animation: scaleIn 0.3s ease-out;
+        }
+
+        .close {
+            color: var(--text-secondary);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: var(--text-primary);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .message-timestamp {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .compartments {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .compartment {
+            flex: 1;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .compartment:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .compartment.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .rooms-container h2, .users-container h2 {
+            margin-bottom: 0.5rem;
+            color: var(--accent-color);
+            font-size: 1.2rem;
+        }
+
+        .chat-header h2 {
+            font-size: 1.2rem;
+        }
+
+        #chatMessages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #chatMessages::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        #chatMessages::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 3px;
+        }
+
+        #chatMessages::-webkit-scrollbar-thumb:hover {
+            background: #2563EB;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: 100%;
+                position: fixed;
+                left: -100%;
+                top: 0;
+                z-index: 1000;
+                transition: left 0.3s ease;
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .sidebar-toggle {
+                display: block;
+            }
+
+            .main-content {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar" id="sidebar">
+            <div class="user-profile">
+                <div class="user-avatar" id="userAvatar"></div>
+                <div class="user-info">
+                    <div class="user-name" id="userName"></div>
+                    <div class="edit-profile" onclick="showEditProfileModal()"><i class="fas fa-edit"></i> Edit Profile</div>
+                </div>
+            </div>
+            <div class="compartments">
+                <div class="compartment active" onclick="toggleCompartment('users')">Users</div>
+                <div class="compartment" onclick="toggleCompartment('rooms')">Rooms</div>
+            </div>
+            <div class="users-container active" id="usersContainer">
+                <div class="search-container">
+                    <input type="text" id="userSearchInput" placeholder="Search users...">
+                    <button onclick="searchUsers()"><i class="fas fa-search"></i></button>
+                </div>
+                <ul id="userList"></ul>
+            </div>
+            <div class="rooms-container" id="roomsContainer">
+                <div class="search-container">
+                    <input type="text" id="roomSearchInput" placeholder="Search rooms...">
+                    <button onclick="searchRooms()"><i class="fas fa-search"></i></button>
+                </div>
+                <ul id="roomList"></ul>
+                <button class="create-room-btn" onclick="showCreateRoomPrompt()"><i class="fas fa-plus"></i> Create Room</button>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="chat-header">
+                <button class="sidebar-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h2 id="chatRoomName">Select a room or user to start chatting</h2>
+                <button id="logoutButton" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+            <div class="chat-messages" id="chatMessages"></div>
+            <div id="typingIndicator" class="typing-indicator"></div>
+            <div class="chat-input">
+                <input type="text" id="messageInput" placeholder="Type a message...">
+                <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i> Send</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <div id="editProfileModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEditProfileModal()">&times;</span>
+            <h2>Edit Profile</h2>
+            <input type="text" id="displayNameInput" placeholder="Enter your display name">
+            <button onclick="updateDisplayName()">Update</button>
+        </div>
+    </div>
+
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+        import { getDatabase, ref, push, onChildAdded, get, query, orderByChild, startAt, endAt, update, set, onValue, limitToLast } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBYlU08K-1oCPcaVbkomhdYaNa3c7R3t9E",
+            authDomain: "blinkr-e2086.firebaseapp.com",
+            databaseURL: "https://blinkr-e2086-default-rtdb.firebaseio.com",
+            projectId: "blinkr-e2086",
+            storageBucket: "blinkr-e2086.appspot.com",
+            messagingSenderId: "905738400420",
+            appId: "1:905738400420:web:40c9039ea3dd6a766eac31",
+            measurementId: "G-LK1KVC79FQ"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
+
+        let currentUser = null;
+        let currentRoom = null;
+        let isTyping = false;
+        let typingTimeout;
+
+        // Check if user is logged in
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                console.log("User is signed in:", user);
+                currentUser = user;
+                loadRooms();
+                loadUsers();
+                saveUserData(user);
+                updateUserStatus(true);
+                updateUserProfile();
+            } else {
+                console.log("No user is signed in");
+                window.location.href = "index.html"; // Redirect to login page
+            }
+        });
+
+        function saveUserData(user) {
+            set(ref(database, 'users/' + user.uid), {
+                displayName: user.displayName || user.email.split('@')[0],
+                email: user.email,
+                status: 'online'
+            }).then(() => {
+                console.log("User data saved successfully");
+            }).catch((error) => {
+                console.error("Error saving user data:", error);
+            });
+        }
+
+        function updateUserStatus(isOnline) {
+            if (currentUser) {
+                update(ref(database, 'users/' + currentUser.uid), {
+                    status: isOnline ? 'online' : 'offline'
+                });
+            }
+        }
+
+        // Load and display rooms
+        function loadRooms() {
+            const roomsRef = ref(database, 'rooms');
+            
+            onValue(roomsRef, (snapshot) => {
+                const roomList = document.getElementById('roomList');
+                roomList.innerHTML = ''; // Clear existing list
+                
+                snapshot.forEach((childSnapshot) => {
+                    const room = childSnapshot.val();
+                    if (room.type === 'group') {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<i class="fas fa-hashtag"></i> ${room.name}`;
+                        li.onclick = () => openChat(childSnapshot.key, room.name, 'room');
+                        roomList.appendChild(li);
+                    }
+                });
+            });
+        }
+
+        // Load and display users
+        function loadUsers() {
+            const usersRef = ref(database, 'users');
+            
+            onValue(usersRef, (snapshot) => {
+                const userList = document.getElementById('userList');
+                userList.innerHTML = ''; // Clear existing list
+                
+                snapshot.forEach((childSnapshot) => {
+                    const user = childSnapshot.val();
+                    if (childSnapshot.key !== currentUser.uid) {
+                        const li = document.createElement('li');
+                        const statusDot = document.createElement('span');
+                        statusDot.className = `user-status ${user.status === 'online' ? 'online' : 'offline'}`;
+                        li.appendChild(statusDot);
+                        li.appendChild(document.createTextNode(user.displayName || user.email));
+                        li.onclick = () => startChat(childSnapshot.key, user.displayName || user.email);
+                        userList.appendChild(li);
+                    }
+                });
+            });
+        }
+
+        // Search rooms
+        window.searchRooms = function() {
+            const searchTerm = document.getElementById('roomSearchInput').value.trim().toLowerCase();
+            const roomsRef = ref(database, 'rooms');
+            const searchQuery = query(roomsRef, orderByChild('name'), startAt(searchTerm), endAt(searchTerm + "\uf8ff"));
+            
+            get(searchQuery).then((snapshot) => {
+                const roomList = document.getElementById('roomList');
+                roomList.innerHTML = ''; // Clear previous results
+                snapshot.forEach((childSnapshot) => {
+                    const room = childSnapshot.val();
+                    if (room.type === 'group') {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<i class="fas fa-hashtag"></i> ${room.name}`;
+                        li.onclick = () => openChat(childSnapshot.key, room.name, 'room');
+                        roomList.appendChild(li);
+                    }
+                });
+            }).catch((error) => {
+                console.error("Error searching rooms:", error);
+            });
+        }
+
+        // Search users
+        window.searchUsers = function() {
+            const searchTerm = document.getElementById('userSearchInput').value.trim().toLowerCase();
+            const usersRef = ref(database, 'users');
+
+            const displayNameQuery = query(usersRef, orderByChild('displayName'), startAt(searchTerm), endAt(searchTerm + "\uf8ff"));
+            const emailQuery = query(usersRef, orderByChild('email'), startAt(searchTerm), endAt(searchTerm + "\uf8ff"));
+
+            Promise.all([get(displayNameQuery), get(emailQuery)])
+                .then(([displayNameSnapshot, emailSnapshot]) => {
+                    const userList = document.getElementById('userList');
+                    userList.innerHTML = ''; // Clear previous results
+                    
+                    const users = new Set(); // Use a Set to avoid duplicates
+
+                    displayNameSnapshot.forEach((childSnapshot) => {
+                        users.add({id: childSnapshot.key, ...childSnapshot.val()});
+                    });
+
+                    emailSnapshot.forEach((childSnapshot) => {
+                        users.add({id: childSnapshot.key, ...childSnapshot.val()});
+                    });
+
+                    if (users.size > 0) {
+                        users.forEach((user) => {
+                            if (user.id !== currentUser.uid) {
+                                const li = document.createElement('li');
+                                const statusDot = document.createElement('span');
+                                statusDot.className = `user-status ${user.status === 'online' ? 'online' : 'offline'}`;
+                                li.appendChild(statusDot);
+                                li.appendChild(document.createTextNode(user.displayName || user.email));
+                                li.onclick = () => startChat(user.id, user.displayName || user.email);
+                                userList.appendChild(li);
+                            }
+                        });
+                    } else {
+                        const li = document.createElement('li');
+                        li.textContent = "No users found";
+                        userList.appendChild(li);
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error searching users:", error);
+                });
+        }
+
+        // Start a chat with a user
+        function startChat(userId, userName) {
+            const roomsRef = ref(database, 'rooms');
+            const userRoomsQuery = query(roomsRef, orderByChild('type'), startAt('private'), endAt('private'));
+            
+            get(userRoomsQuery).then((snapshot) => {
+                let existingRoomId = null;
+                snapshot.forEach((childSnapshot) => {
+                    const room = childSnapshot.val();
+                    if (room.participants && room.participants[currentUser.uid] && room.participants[userId]) {
+                        existingRoomId = childSnapshot.key;
+                        return true; // Break the loop
+                    }
+                });
+
+                if (existingRoomId) {
+                    openChat(existingRoomId, `Chat with ${userName}`, 'user');
+                } else {
+                    const newRoomRef = push(roomsRef);
+                    set(newRoomRef, {
+                        name: `Chat with ${userName}`,
+                        type: 'private',
+                        createdBy: currentUser.uid,
+                        participants: {
+                            [currentUser.uid]: true,
+                            [userId]: true
+                        },
+                        createdAt: Date.now()
+                    }).then(() => {
+                        openChat(newRoomRef.key, `Talk with ${userName}`, 'user!');
+                    }).catch((error) => {
+                        console.error("Error starting chat:", error);
+                    });
+                }
+            }).catch((error) => {
+                console.error("Error checking for existing chat:", error);
+            });
+        }
+
+        // Open chat
+        function openChat(roomId, roomName, type) {
+            currentRoom = roomId;
+            document.getElementById('chatRoomName').textContent = roomName;
+            document.getElementById('chatMessages').innerHTML = '';
+            loadMessages(roomId);
+            listenForTypingIndicators(roomId);
+
+            // Update UI to show active chat
+            const allItems = document.querySelectorAll('#roomList li, #userList li');
+            allItems.forEach(item => item.classList.remove('active'));
+
+            if (type === 'room') {
+                const roomItem = Array.from(document.querySelectorAll('#roomList li')).find(li => li.textContent.trim() === roomName);
+                if (roomItem) roomItem.classList.add('active');
+            } else {
+                const userItem = Array.from(document.querySelectorAll('#userList li')).find(li => li.textContent.includes(roomName.replace('Chat with ', '')));
+                if (userItem) userItem.classList.add('active');
+            }
+
+            // Close sidebar on mobile after opening a chat
+            if (window.innerWidth <= 768) {
+                toggleSidebar();
+            }
+        }
+
+        // Load messages
+        function loadMessages(roomId) {
+            const messagesRef = ref(database, `messages/${roomId}`);
+            const recentMessagesQuery = query(messagesRef, limitToLast(20));
+            
+            onChildAdded(recentMessagesQuery, (snapshot) => {
+                const message = snapshot.val();
+                displayMessage(message);
+                if (message.senderId !== currentUser.uid) {
+                    showNotification(`New message from ${message.senderName}`);
+                }
+            });
+        }
+
+        // Display message
+        function displayMessage(message) {
+            const messageElement = document.createElement('div');
+            messageElement.className = `message ${message.senderId === currentUser.uid ? 'sent' : 'received'}`;
+            let messageContent = '';
+            
+            if (message.senderId !== currentUser.uid) {
+                messageContent += `<div class="message-sender">${message.senderName}</div>`;
+            }
+            
+            messageContent += `
+                ${message.text}
+                <div class="message-timestamp">${new Date(message.timestamp).toLocaleString()}</div>
+            `;
+            
+            messageElement.innerHTML = messageContent;
+            document.getElementById('chatMessages').appendChild(messageElement);
+            document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
+        }
+
+        // Send message
+        window.sendMessage = function() {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value.trim();
+            if (message && currentRoom && currentUser) {
+                const messagesRef = ref(database, `messages/${currentRoom}`);
+                push(messagesRef, {
+                    text: message,
+                    senderId: currentUser.uid,
+                    senderName: currentUser.displayName || currentUser.email,
+                    timestamp: Date.now()
+                }).then(() => {
+                    messageInput.value = '';
+                    stopTyping();
+                }).catch((error) => {
+                    console.error("Error sending message:", error);
+                });
+            }
+        }
+
+        // Logout function
+        window.logout = function() {
+            updateUserStatus(false);
+            signOut(auth).then(() => {
+                console.log("User signed out successfully");
+                window.location.href = "index.html"; // Redirect to login page
+            }).catch((error) => {
+                console.error("Error signing out:", error);
+            });
+        }
+
+        // Toggle sidebar for mobile view
+        window.toggleSidebar = function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        // Typing indicator
+        function startTyping() {
+            if (!isTyping && currentRoom) {
+                isTyping = true;
+                const updates = {};
+                updates[`rooms/${currentRoom}/typingUsers/${currentUser.uid}`] = {
+                    displayName: currentUser.displayName || currentUser.email,
+                    timestamp: Date.now()
+                };
+                update(ref(database), updates);
+            }
+            clearTimeout(typingTimeout);
+            typingTimeout = setTimeout(stopTyping, 3000);
+        }
+
+        function stopTyping() {
+            if (isTyping && currentRoom) {
+                isTyping = false;
+                const updates = {};
+                updates[`rooms/${currentRoom}/typingUsers/${currentUser.uid}`] = null;
+                update(ref(database), updates);
+            }
+        }
+
+        // Listen for typing indicators
+        function listenForTypingIndicators(roomId) {
+            const typingRef = ref(database, `rooms/${roomId}/typingUsers`);
+            onValue(typingRef, (snapshot) => {
+                const typingUsers = snapshot.val();
+                const typingIndicator = document.getElementById('typingIndicator');
+                if (typingUsers) {
+                    const typingUserNames = Object.entries(typingUsers)
+                        .filter(([uid, _]) => uid !== currentUser.uid)
+                        .map(([_, user]) => user.displayName);
+                    if (typingUserNames.length > 0) {
+                        typingIndicator.textContent = `${typingUserNames.join(', ')} is typing...`;
+                        typingIndicator.classList.add('pulse');
+                    } else {
+                        typingIndicator.textContent = '';
+                        typingIndicator.classList.remove('pulse');
+                    }
+                } else {
+                    typingIndicator.textContent = '';
+                    typingIndicator.classList.remove('pulse');
+                }
+            });
+        }
+
+        // Show notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // Create room
+        window.showCreateRoomPrompt = function() {
+            const roomName = prompt("Enter a name for the new room:");
+            if (roomName) {
+                createRoom(roomName);
+            }
+        }
+
+        function createRoom(roomName) {
+            const roomsRef = ref(database, 'rooms');
+            const newRoomRef = push(roomsRef);
+            set(newRoomRef, {
+                name: roomName,
+                type: 'group',
+                createdBy: currentUser.uid,
+                participants: {
+                    [currentUser.uid]: true
+                },
+                createdAt: Date.now()
+            }).then(() => {
+                openChat(newRoomRef.key, roomName, 'room');
+                loadRooms();
+            }).catch((error) => {
+                console.error("Error creating room:", error);
+            });
+        }
+
+        // Update user profile
+        function updateUserProfile() {
+            const userAvatar = document.getElementById('userAvatar');
+            const userName = document.getElementById('userName');
+            
+            userAvatar.textContent = (currentUser.displayName || currentUser.email)[0].toUpperCase();
+            userName.textContent = currentUser.displayName || currentUser.email;
+        }
+
+        // Show edit profile modal
+        window.showEditProfileModal = function() {
+            const modal = document.getElementById('editProfileModal');
+            const displayNameInput = document.getElementById('displayNameInput');
+            displayNameInput.value = currentUser.displayName || '';
+            modal.style.display = 'block';
+        }
+
+        // Close edit profile modal
+        window.closeEditProfileModal = function() {
+            const modal = document.getElementById('editProfileModal');
+            modal.style.display = 'none';
+        }
+
+        // Update display name
+        window.updateDisplayName = function() {
+            const displayNameInput = document.getElementById('displayNameInput');
+            const newDisplayName = displayNameInput.value.trim();
+            
+            if (newDisplayName) {
+                updateProfile(currentUser, {
+                    displayName: newDisplayName
+                }).then(() => {
+                    console.log("Display name updated successfully");
+                    updateUserProfile();
+                    saveUserData(currentUser);
+                    closeEditProfileModal();
+                }).catch((error) => {
+                    console.error("Error updating display name:", error);
+                });
+            }
+        }
+
+        // Toggle compartments
+        window.toggleCompartment = function(compartment) {
+            const usersContainer = document.getElementById('usersContainer');
+            const roomsContainer = document.getElementById('roomsContainer');
+            const usersCompartment = document.querySelector('.compartment:nth-child(1)');
+            const roomsCompartment = document.querySelector('.compartment:nth-child(2)');
+
+            if (compartment === 'users') {
+                usersContainer.classList.add('active');
+                roomsContainer.classList.remove('active');
+                usersCompartment.classList.add('active');
+                roomsCompartment.classList.remove('active');
+            } else {
+                usersContainer.classList.remove('active');
+                roomsContainer.classList.add('active');
+                usersCompartment.classList.remove('active');
+                roomsCompartment.classList.add('active');
+            }
+        }
+
+        // Add event listeners
+        document.getElementById('roomSearchInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                searchRooms();
+            }
+        });
+
+        document.getElementById('userSearchInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                searchUsers();
+            }
+        });
+
+        document.getElementById('messageInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                sendMessage();
+            }
+            startTyping();
+        });
+
+        // Close the Firebase connection when the window is closed
+        window.addEventListener('beforeunload', (event) => {
+            updateUserStatus(false);
+        });
+    </script>
+</body>
+</html>
+
