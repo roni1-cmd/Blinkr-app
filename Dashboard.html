@@ -4,16 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blinkr Chat</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-primary: #1E1E2E;
-            --bg-secondary: #2A2A3C;
-            --text-primary: #FFFFFF;
-            --text-secondary: #A0A0A0;
-            --accent-color: #3B82F6;
-            --border-color: #3A3A4C;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f0f2f5;
+            --text-primary: #050505;
+            --text-secondary: #65676b;
+            --accent-color: #4a90e2;
+            --border-color: #dddfe2;
+            --message-sent: #0084ff;
+            --message-received: #e4e6eb;
+            --color-1: #FF6B6B;
+            --color-2: #4ECDC4;
+            --color-3: #45B7D1;
+            --color-4: #F7DC6F;
+            --color-5: #A569BD;
         }
 
         * {
@@ -23,7 +30,7 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Poppins', sans-serif;
             line-height: 1.6;
             color: var(--text-primary);
             background: var(--bg-primary);
@@ -44,6 +51,7 @@
             border-right: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
+            transition: all 0.3s ease;
         }
 
         .main-content {
@@ -54,8 +62,8 @@
         }
 
         .chat-header {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
+            background: var(--accent-color);
+            color: white;
             padding: 1rem;
             display: flex;
             align-items: center;
@@ -87,6 +95,7 @@
             font-size: 14px;
             background-color: var(--bg-primary);
             color: var(--text-primary);
+            font-family: 'Poppins', sans-serif;
         }
 
         input[type="text"]:focus {
@@ -103,10 +112,12 @@
             cursor: pointer;
             transition: all 0.3s ease;
             font-weight: 500;
+            font-family: 'Poppins', sans-serif;
         }
 
         button:hover {
             opacity: 0.9;
+            transform: translateY(-2px);
         }
 
         ul {
@@ -125,7 +136,7 @@
         }
 
         li:hover {
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(0, 0, 0, 0.05);
         }
 
         .search-container {
@@ -156,13 +167,15 @@
         }
 
         .message.sent {
-            background-color: var(--accent-color);
+            background-color: var(--message-sent);
+            color: white;
             align-self: flex-end;
             margin-left: auto;
         }
 
         .message.received {
-            background-color: var(--bg-secondary);
+            background-color: var(--message-received);
+            color: var(--text-primary);
             align-self: flex-start;
         }
 
@@ -176,7 +189,7 @@
         .sidebar-toggle {
             display: none;
             background-color: transparent;
-            color: var(--text-primary);
+            color: white;
             border: none;
             padding: 0.5rem;
             cursor: pointer;
@@ -231,15 +244,15 @@
             align-items: center;
             padding: 1rem;
             border-bottom: 1px solid var(--border-color);
-            background: var(--bg-secondary);
-            color: var(--text-primary);
+            background: var(--accent-color);
+            color: white;
         }
 
         .user-avatar {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background-color: var(--accent-color);
+            background-color: var(--color-1);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -259,7 +272,7 @@
 
         .edit-profile {
             cursor: pointer;
-            color: var(--text-secondary);
+            color: white;
             font-size: 12px;
         }
 
@@ -277,7 +290,7 @@
         }
 
         .modal-content {
-            background-color: var(--bg-secondary);
+            background-color: var(--bg-primary);
             margin: 15% auto;
             padding: 20px;
             border: 1px solid var(--border-color);
@@ -322,7 +335,7 @@
         }
 
         .compartment:hover {
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(0, 0, 0, 0.05);
         }
 
         .compartment.active {
@@ -379,7 +392,52 @@
         }
 
         #chatMessages::-webkit-scrollbar-thumb:hover {
-            background: #2563EB;
+            background: #1563cf;
+        }
+
+        .search-messages {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .search-messages input {
+            flex: 1;
+            margin-right: 0.5rem;
+        }
+
+        .suggestion-chip {
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 5px 10px;
+            border-radius: 15px;
+            margin-right: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.3s ease;
+        }
+
+        .suggestion-chip:hover {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .theme-selector {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+        }
+
+        .theme-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .theme-option:hover {
+            transform: scale(1.1);
         }
 
         @media (max-width: 768px) {
@@ -407,6 +465,18 @@
 
             .main-content {
                 width: 100%;
+            }
+
+            .chat-input {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                padding: 10px;
+            }
+
+            .chat-messages {
+                padding-bottom: 60px;
             }
         }
     </style>
@@ -447,10 +517,15 @@
                 <h2 id="chatRoomName">Select a room or user to start chatting</h2>
                 <button id="logoutButton" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
             </div>
+            <div class="search-messages">
+                <input type="text" id="messageSearchInput" placeholder="Search messages...">
+                <button onclick="searchMessages()"><i class="fas fa-search"></i></button>
+            </div>
             <div class="chat-messages" id="chatMessages"></div>
             <div id="typingIndicator" class="typing-indicator"></div>
             <div class="chat-input">
                 <input type="text" id="messageInput" placeholder="Type a message...">
+                <div id="suggestionChips"></div>
                 <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i> Send</button>
             </div>
         </div>
@@ -463,9 +538,16 @@
             <span class="close" onclick="closeEditProfileModal()">&times;</span>
             <h2>Edit Profile</h2>
             <input type="text" id="displayNameInput" placeholder="Enter your display name">
-            <button onclick="updateDisplayName()">Update</button>
+            <div class="theme-selector">
+                <div class="theme-option" style="background-color: #ffffff;" onclick="changeTheme('light')"></div>
+                <div class="theme-option" style="background-color: #1c2128;" onclick="changeTheme('dark')"></div>
+                <div class="theme-option" style="background-color: #f0f0f0;" onclick="changeTheme('neutral')"></div>
+            </div>
+            <button onclick="updateProfile()">Update</button>
         </div>
     </div>
+
+    <audio id="messageSound" src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3"></audio>
 
     <script type="module">
         // Import Firebase modules
@@ -505,6 +587,7 @@
                 saveUserData(user);
                 updateUserStatus(true);
                 updateUserProfile();
+                loadTheme();
             } else {
                 console.log("No user is signed in");
                 window.location.href = "index.html"; // Redirect to login page
@@ -672,7 +755,7 @@
                         },
                         createdAt: Date.now()
                     }).then(() => {
-                        openChat(newRoomRef.key, `Talk with ${userName}`, 'user!');
+                        openChat(newRoomRef.key, `Chat with ${userName}`, 'user');
                     }).catch((error) => {
                         console.error("Error starting chat:", error);
                     });
@@ -718,6 +801,7 @@
                 displayMessage(message);
                 if (message.senderId !== currentUser.uid) {
                     showNotification(`New message from ${message.senderName}`);
+                    playMessageSound();
                 }
             });
         }
@@ -732,10 +816,8 @@
                 messageContent += `<div class="message-sender">${message.senderName}</div>`;
             }
             
-            messageContent += `
-                ${message.text}
-                <div class="message-timestamp">${new Date(message.timestamp).toLocaleString()}</div>
-            `;
+            messageContent += message.text;
+            messageContent += `<div class="message-timestamp">${new Date(message.timestamp).toLocaleString()}</div>`;
             
             messageElement.innerHTML = messageContent;
             document.getElementById('chatMessages').appendChild(messageElement);
@@ -748,7 +830,9 @@
             const message = messageInput.value.trim();
             if (message && currentRoom && currentUser) {
                 const messagesRef = ref(database, `messages/${currentRoom}`);
-                push(messagesRef, {
+                const newMessageRef = push(messagesRef);
+                set(newMessageRef, {
+                    id: newMessageRef.key,
                     text: message,
                     senderId: currentUser.uid,
                     senderName: currentUser.displayName || currentUser.email,
@@ -887,8 +971,8 @@
             modal.style.display = 'none';
         }
 
-        // Update display name
-        window.updateDisplayName = function() {
+        // Update profile
+        window.updateProfile = function() {
             const displayNameInput = document.getElementById('displayNameInput');
             const newDisplayName = displayNameInput.value.trim();
             
@@ -926,6 +1010,126 @@
             }
         }
 
+        // Search messages
+        window.searchMessages = function() {
+            const searchTerm = document.getElementById('messageSearchInput').value.trim().toLowerCase();
+            const messagesRef = ref(database, `messages/${currentRoom}`);
+            
+            get(messagesRef).then((snapshot) => {
+                const chatMessages = document.getElementById('chatMessages');
+                chatMessages.innerHTML = ''; // Clear previous messages
+                
+                snapshot.forEach((childSnapshot) => {
+                    const message = childSnapshot.val();
+                    if (message.text.toLowerCase().includes(searchTerm)) {
+                        displayMessage(message);
+                    }
+                });
+            }).catch((error) => {
+                console.error("Error searching messages:", error);
+            });
+        }
+
+        // AI-powered message suggestions
+        function generateSuggestions(input) {
+            const suggestions = [
+                "How are you doing today?",
+                "What's new?",
+                "Can we schedule a meeting?",
+                "Thanks for your help!",
+                "Looking forward to our collaboration."
+            ];
+            
+            const filteredSuggestions = suggestions.filter(suggestion => 
+                suggestion.toLowerCase().includes(input.toLowerCase())
+            );
+            
+            return filteredSuggestions.slice(0, 3); // Return top 3 suggestions
+        }
+
+        document.getElementById('messageInput').addEventListener('input', function(e) {
+            const input = e.target.value;
+            const suggestions = generateSuggestions(input);
+            const suggestionChips = document.getElementById('suggestionChips');
+            suggestionChips.innerHTML = '';
+            
+            suggestions.forEach(suggestion => {
+                const chip = document.createElement('span');
+                chip.className = 'suggestion-chip';
+                chip.textContent = suggestion;
+                chip.onclick = function() {
+                    document.getElementById('messageInput').value = suggestion;
+                    suggestionChips.innerHTML = '';
+                };
+                suggestionChips.appendChild(chip);
+            });
+        });
+
+        // Theme customization
+        window.changeTheme = function(theme) {
+            let root = document.documentElement;
+            switch (theme) {
+                case 'light':
+                    root.style.setProperty('--bg-primary', '#ffffff');
+                    root.style.setProperty('--bg-secondary', '#f0f2f5');
+                    root.style.setProperty('--text-primary', '#050505');
+                    root.style.setProperty('--text-secondary', '#65676b');
+                    root.style.setProperty('--accent-color', '#4a90e2');
+                    root.style.setProperty('--border-color', '#dddfe2');
+                    root.style.setProperty('--message-sent', '#0084ff');
+                    root.style.setProperty('--message-received', '#e4e6eb');
+                    break;
+                case 'dark':
+                    root.style.setProperty('--bg-primary', '#18191a');
+                    root.style.setProperty('--bg-secondary', '#242526');
+                    root.style.setProperty('--text-primary', '#e4e6eb');
+                    root.style.setProperty('--text-secondary', '#b0b3b8');
+                    root.style.setProperty('--accent-color', '#2d88ff');
+                    root.style.setProperty('--border-color', '#3e4042');
+                    root.style.setProperty('--message-sent', '#0084ff');
+                    root.style.setProperty('--message-received', '#3a3b3c');
+                    break;
+                case 'neutral':
+                    root.style.setProperty('--bg-primary', '#f0f0f0');
+                    root.style.setProperty('--bg-secondary', '#e0e0e0');
+                    root.style.setProperty('--text-primary', '#333333');
+                    root.style.setProperty('--text-secondary', '#666666');
+                    root.style.setProperty('--accent-color', '#4a90e2');
+                    root.style.setProperty('--border-color', '#cccccc');
+                    root.style.setProperty('--message-sent', '#4a90e2');
+                    root.style.setProperty('--message-received', '#d9d9d9');
+                    break;
+            }
+            saveTheme(theme);
+        }
+
+        function saveTheme(theme) {
+            if (currentUser) {
+                update(ref(database, 'users/' + currentUser.uid), {
+                    theme: theme
+                });
+            }
+        }
+
+        function loadTheme() {
+            if (currentUser) {
+                get(ref(database, 'users/' + currentUser.uid + '/theme')).then((snapshot) => {
+                    const theme = snapshot.val();
+                    if (theme) {
+                        changeTheme(theme);
+                    }
+                }).catch((error) => {
+                    console.error("Error loading theme:", error);
+                });
+            }
+        }
+
+        // Play message sound
+        function playMessageSound() {
+            const audio = document.getElementById('messageSound');
+            audio.play();
+        }
+
         // Add event listeners
         document.getElementById('roomSearchInput').addEventListener('keypress', function(event) {
             if (event.key === 'Enter') {
@@ -956,4 +1160,3 @@
     </script>
 </body>
 </html>
-
