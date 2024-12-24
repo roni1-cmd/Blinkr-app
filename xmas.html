@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Christmas Surprise</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #ff4d4d, #ff9999, #ffe6e6);
+      color: #333;
+      margin: 0;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 30px;
+      background: #ffffff;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      border-radius: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 10%, transparent 70%);
+      animation: spin 20s linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    h1 {
+      color: #b30000;
+      font-size: 2.8em;
+      margin-bottom: 15px;
+      z-index: 1;
+      position: relative;
+    }
+
+    .subtitle {
+      color: #555;
+      font-size: 1.2em;
+      margin-bottom: 30px;
+      z-index: 1;
+      position: relative;
+    }
+
+    .choices {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      z-index: 1;
+      position: relative;
+    }
+
+    .choices button {
+      background: #ff4d4d;
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      padding: 15px 30px;
+      font-size: 1.1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+    }
+
+    .choices button:hover {
+      background: #cc0000;
+      transform: scale(1.1);
+    }
+
+    .thrill-message {
+      display: none;
+      font-size: 1.2em;
+      color: #b30000;
+      margin-top: 20px;
+      animation: fadeIn 1s ease-in-out;
+      z-index: 1;
+      position: relative;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .letter {
+      margin-top: 40px;
+      padding: 30px;
+      background: #ffe6e6;
+      border: 3px dashed #ff9999;
+      border-radius: 10px;
+      font-size: 1.2em;
+      line-height: 1.8;
+      display: none;
+      animation: fadeIn 2s ease-in-out;
+      z-index: 1;
+      position: relative;
+    }
+
+    .snowflakes {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .snowflake {
+      position: absolute;
+      top: -10px;
+      font-size: 1em;
+      color: #fff;
+      opacity: 0.8;
+      animation: fall 10s linear infinite;
+    }
+
+    @keyframes fall {
+      from {
+        transform: translateY(-10%) rotate(0deg);
+      }
+      to {
+        transform: translateY(110%) rotate(360deg);
+      }
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 0.9em;
+      color: #666;
+    }
+
+    footer a {
+      color: #b30000;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2.2em;
+      }
+
+      .choices button {
+        padding: 12px 20px;
+        font-size: 1em;
+      }
+
+      .letter {
+        font-size: 1em;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="snowflakes">
+      <div class="snowflake">❄️</div>
+      <div class="snowflake">❄️</div>
+      <div class="snowflake">❄️</div>
+      <div class="snowflake">❄️</div>
+      <div class="snowflake">❄️</div>
+    </div>
+
+    <h1>Merry Christmas, Shiera Mae Hagonoy aodkaksl ksksksksk! 🎄</h1>
+    <p class="subtitle">The holiday magic is here (eheheh)! Pili ug gift, usa-usaha ha? bantay ka lang nako gyud shiera mae</p>
+
+    <div class="choices">
+      <button onclick="confirmChoice('A')">🎁 Pilion ni nimo or ako?</button>
+      <button onclick="confirmChoice('B')">🎁 Kani o ako?</button>
+      <button onclick="confirmChoice('C')">🎁 Ge na lang</button>
+    </div>
+
+    <div id="thrill-message" class="thrill-message"></div>
+    <div id="letter" class="letter"></div>
+  </div>
+
+  <footer>
+     Holiday cheer by <a href="#">tag-ana</a>.
+  </footer>
+
+  <script>
+    function confirmChoice(choice) {
+      const thrillMessage = document.getElementById('thrill-message');
+      const letterDiv = document.getElementById('letter');
+
+      thrillMessage.style.display = 'none';
+      letterDiv.style.display = 'none';
+
+      if (confirm("Are you sure about this choice? Wa na ni bawiay... 🎅")) {
+        thrillMessage.style.display = 'block';
+        thrillMessage.innerHTML = "Sige na lang. 🎁✨";
+
+        setTimeout(() => {
+          thrillMessage.innerHTML = "Just kidding... Sure na jud ka? 🎄";
+          if (confirm("This is your final chance to back out... Are you absolutely certain? 🎁")) {
+            thrillMessage.innerHTML = "Ambot nimo shiera pero imo na ning shimering ✨";
+            setTimeout(() => revealLetter(choice), 2000);
+          } else {
+            thrillMessage.innerHTML = "Alright, take your time. 🎅";
+          }
+        }, 2000);
+      } else {
+        thrillMessage.style.display = 'block';
+        thrillMessage.innerHTML = "Okay, no rush. Sige na lang ✨";
+      }
+    }
+
+    function revealLetter(choice) {
+      const letterDiv = document.getElementById('letter');
+      let message = '';
+
+      switch (choice) {
+        case 'A':
+          message = `
+            <strong>To shiera mae ksksks,</strong><br>
+            From the moment you entered my life, you’ve brought light and joy that outshines the brightest Christmas lights. This holiday season, I want you to know how deeply cherished you are.
+            <br><br>
+            As we celebrate this time together, we will do our best to make every day feel as warm and joyful as Christmas morning. Murag maabot jud ta sa point nga magsinumbagay pero according to you dapat dili ta violent hehehe diba? Tapos imo kong awayon, good diay na? Diba dili man? Kneeways, Merry Christmas, my love! ❤️🎄`;
+          break;
+        case 'B':
+          message = `
+            <strong>To shiera mae (again),</strong><br>
+            Just like the snowflakes that gently fall from the sky, you’ve brought beauty and peace into my world. This Christmas, I’m reminded of how truly special you are to me. Pero sultian tika, ga english ra jud ko sa una para ma feel nimo ba nga naa pud koy umoy pagkatawo (eme eme ra na) pero sige lang, love man pud tika, diba? Unta di ka mapul-an ug ing-ani ani kay mapuno kag ing ana-ana, kaysa buhatan tikag Google Forms oh diba ka jema
+            <br><br>
+            My heart is yours, wrapped in love and tied with a bow. Here’s to many more holiday seasons spent in your warmth. Love you forever! ❄️❤️`;
+          break;
+        case 'C':
+          message = `
+            <strong>To the love of my life again and again and again,</strong><br>
+            Hoy, bugal bugal ra na akong addressor ha pero hehehehe kneeways, you are the melody to my favorite Christmas carol, the warmth of the fire on a chilly night, and the sparkle of every ornament on the tree. I can’t imagine this holiday season without you. Kuyaw kaayo sa hhhehehehe mubo ako mga messages no pero ikaw bitaw na puros ang subject, mura ko Daniel Caesar pero piang lang ko 
+            <br><br>
+            Let’s create memories that will last a lifetime and keep the magic of Christmas alive in our hearts. Diba shema kaykog mga kuan-kuan kay ing ana tika ka love, buhatan tikag ing ani bisag unsa pa ni ka kuyaw HAHAHAHAH weirdo or unorthodox daw ni nga pamaagi pero wa koy pake kay ikaw man ako tagaan ani di man ikaw diba :D. Sumbagay ta taod taod hehehehhehehehehe. Regardless, you’re my greatest gift. 🎁✨`;
+          break;
+      }
+
+      letterDiv.innerHTML = message;
+      letterDiv.style.display = 'block';
+    }
+  </script>
+</body>
+</html>
