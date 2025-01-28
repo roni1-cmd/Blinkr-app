@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>18 Gifts of Love ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: #ffe6f2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #ff3366;
+            text-align: center;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .gift-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            max-width: 1000px;
+            width: 100%;
+            margin: 20px auto;
+        }
+
+        .gift {
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .gift:hover {
+            transform: scale(1.05);
+        }
+
+        .gift-box {
+            width: 100%;
+            height: 150px;
+            background: #ff4444;
+            border-radius: 10px;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .ribbon {
+            position: absolute;
+            background: #ff99cc;
+            width: 20px;
+            height: 160px;
+            left: calc(50% - 10px);
+            top: -5px;
+        }
+
+        .bow {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: #ff99cc;
+            top: -20px;
+            left: calc(50% - 20px);
+            border-radius: 50%;
+            z-index: 2;
+        }
+
+        .gift-number {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            z-index: 3;
+        }
+
+        .letter {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.2);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .letter.visible {
+            display: block;
+            opacity: 1;
+            transform: translate(-50%, -50%);
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        .overlay.visible {
+            display: block;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #ff3366;
+        }
+
+        .close-btn:focus {
+            outline: 2px solid #ff3366;
+        }
+
+        .hearts span {
+            position: fixed;
+            color: #ff3366;
+            animation: heartFloat 3s linear forwards;
+        }
+
+        @keyframes heartFloat {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-100vh); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <h1>Happy 18 Birthday Shira Mey!!!!!!1</h1>
+    
+    <div class="gift-grid" id="giftGrid"></div>
+
+    <div class="overlay" id="overlay"></div>
+
+    <script>
+        const messages = [
+            "You’re officially an adult, but to me, you’ll always be the sweet, caring, and beautiful person who captured my heart. Salamat kaayo for all the joy and love nga imong gihatag sa akong kinabuhi. Ikaw ang akong inspiration ug kalipay, and I’m so blessed to have you.This new chapter of your life is filled with exciting opportunities and challenges, pero ayaw kalimti nga naa ko pirmi sa imong kiliran. Together, we’ll face anything, bisan unsa pa na ang mga pagsulay. Padayon lang sa imong mga pangandoy, kay kahibalo ko nga makab-ot nimo ang tanan with your determination and heart. I hope this day will be as special as you are, and that you feel how deeply you are loved. Daghan kaayo kog pasalamat sa Ginoo nga gihatag ka niya sa ako. I love you so much, Shiera Mae. You’re my world, my everything, and I can’t wait to see where life takes us.",
+            "Today is such a special day, and it’s all about you, the most amazing person in my life. You’ve brought so much light and happiness into my world. Every moment with you feels like a dream, and I’m so grateful nga ikaw akong kuyog sa akong journey sa kinabuhi. Karong adlaw, I want you to know how proud I am of the beautiful, strong, and kind woman you’ve become. This milestone marks the start of new adventures, new dreams, and new opportunities. Ayaw kalimti nga naa ra ko diri kanunay para nimo—mag-suporta, mag-cheer, ug magpakatawa sa imoha. You deserve all the love, success, and happiness this life has to offer. I can’t wait to celebrate with you, laugh with you, and create more unforgettable memories. Love kaayo tika, Shiera Mae. I promise to always be by your side, through every step of this exciting new chapter in your life.",
+            "Karong adlaw, I celebrate you—the most beautiful soul in my life. Ikaw ang akong paborito nga regalo gikan sa Ginoo, and I’ll forever treasure every moment nga mag-uban ta. Now that you’re 18, daghan kaayo ug opportunities nga naga-hulat nimo. Never doubt yourself, love, kay kahibalo ko nga makaya nimo tanan. You are smart, strong, and absolutely amazing. Ayaw kabalaka, naa ko diri to guide you, support you, and love you unconditionally. I’m so excited for the future with you, Shiera Mae. Let’s continue to make memories nga atong ikapanghambog sa mga tuig nga muabot. I love you more than words can say. Always remember nga bisan unsa pa ang mahitabo, ikaw ra ang akong kalipay ug akong paborito nga tawo. Let’s make this year unforgettable!",
+            "Today is a celebration of you—the most beautiful and amazing person I know. You’ve brought so much happiness into my life, and I can’t thank you enough for being my source of strength and love. Salamat kaayo sa imong pagmahal ug pagsabot nako, bisan pa sa akong mga kahuyang. I hope this day reminds you of how loved and cherished you are, not just by me but by everyone whose life you’ve touched. You deserve all the happiness in the world, Shiera, and I’ll do everything I can to make sure you feel it every day. Sa tanan nakong mga gipangayo sa Ginoo, you're one of the most valuable gift nga gihatag niya sa ako. I love you so much, and I can’t wait to spend more moments together, creating memories that will last forever. Enjoy your special day, my love!",
+            "This day is as beautiful as you are because it’s the day you came into this world and made it brighter. Salamat kaayo, Shiera, sa imong pagdala ug kalipay sa akong kinabuhi. Imong kaayo ug gugma mao ang akong source of inspiration, ug wala koy lain gihandom kundi ang magpabilin sa imong kiliran hangtod sa kahangturan. You’ve always been my greatest blessing, and I promise to love and support you through all of life’s ups and downs. Remember that no matter what happens, naa ko diri kanunay para nimo. Let’s continue to chase our dreams and build a future full of happiness and love. Happy Birthday, Shiera! You mean the world to me, and I’m so thankful to have you in my life. I love you more than words can ever express.",
+            "Today is all about celebrating the wonderful, kind, and beautiful person that you are. Imong presensya sa akong kinabuhi naghatag ug kahayag ug kalipay nga dili ikatandi. Bisan unsa pa’y mahitabo, ikaw ang akong forever nga partner ug akong pinakaduol sa akong kasing-kasing. I hope you feel every bit of the love and appreciation you deserve. You’re more than amazing, Shiera, and I’m so grateful nga ikaw akong kuyog sa akong journey sa kinabuhi. Let’s continue to create memories nga dili nato malimtan, ug magtinabangay ta sa pag-atubang sa tanan natong mga pangandoy. I love you so much, Shiera Mae. You are my everything, and I’ll always do my best to make you happy. Enjoy this special day, my love, because it’s all about you!",
+            "I feel so blessed that you are in my life. Your kindness and strength never cease to amaze me. I can’t imagine going through this journey without you by my side. Salamat sa imong pagka-mahigugmaon ug sa tanan nga positibong butang nga imong gihatag sa akong kinabuhi. May your heart always be filled with joy, and may all the dreams you've kept in your heart come true. You’re not just my love, you’re my inspiration. I can’t wait to spend countless more birthdays with you. Enjoy every moment, because today is a celebration of the amazing person you are!",
+            "Today is all about you, the beautiful soul who has touched my life in so many ways. Your presence fills every day with warmth, and I am thankful for every second I get to spend with you. Sa imong gugma ug kalipay, nahimo ko nga mas lig-on ug mas maayo nga tawo. I wish for all the success and happiness in the world to find its way to you. Padayon sa pag-abot sa imong mga pangandoy, and I’ll be here to cheer for you in every step you take. You deserve the best, and I’m lucky to witness your journey. Let’s make today as special as you are!",
+            "You are such a wonderful person, and every moment spent with you is a gift. From your smile to your caring heart, you make life so much brighter. Sa tanan nga mga kalipay ug kasakit, ikaw ang akong naghatag ug kahulugan sa tanan. I wish you endless laughter, peace, and success this year. Naa ko diri pirmi para nimo, and I promise to be your biggest supporter and your safe place. I’m so grateful to have you, and I can’t wait to see where life takes us together. Wishing you the happiest birthday, my one and only. I love you deeply! ",
+            "You are truly one of a kind, and I’m beyond grateful to have you in my life. Every moment with you is a treasure, and I look forward to making countless more memories together. Salamat sa tanan nimo nga pagmahal ug pag-supporta. You’ve made me a better person just by being in my world. I wish you all the happiness and success you deserve, and more. Gusto ko nga makita ka mag-grow, mag-succeed, ug mag-enjoy sa imong mga pangandoy. No matter where life takes us, I will always be here, by your side, cheering you on. Wishing you an unforgettable day filled with love and joy!",
+            "Every day I spend with you feels like a blessing. You’ve brought so much joy into my world, and I’m forever thankful for the love you give. Imong pagkamaayo ug pagkamaalalahanin mao gyud ang naghatag ug kahulugan sa akong mga adlaw. On your special day, I want to remind you how amazing you are. I’ll always be here for you, supporting you in every step you take. May this year be full of unforgettable moments, big dreams, and accomplishments. Wishing you all the happiness in the world, my love!",
+            "You are more than just my love—you are my best friend, my partner, and my greatest source of happiness. Every day with you feels like a new adventure, and I wouldn’t want to share it with anyone else. Salamat sa imong pagsuporta, sa imong pagpasensya, ug sa imong paghatag ug kahulugan sa akong kinabuhi. I wish for you to have a year full of growth, laughter, and all the things that bring you joy. As you continue to shine and achieve your dreams, know that I’ll always be here to celebrate you. You deserve nothing but the best today and every day. I love you so much, baobei!",
+            "Today is a reminder of how incredibly blessed I am to have you in my life. Your heart, your spirit, and your unwavering support mean the world to me. Salamat sa tanan, sa imong mga efforts, sa imong mga smile nga naghatag ug kahayag sa akong mga adlaw. You are more than just my love; you are my best friend, my rock, and the most beautiful person I know. I look back at everything we’ve been through together, and I can’t help but feel immense gratitude. We’ve shared so many moments, both easy and difficult, but through it all, you’ve shown me what true strength and love really are. I want you to know that no matter what the future holds, I will always be by your side—supporting you, lifting you up, and loving you endlessly. I hope this year brings you closer to the fulfillment of all your dreams. Hinaot nga matagamtam nimo ang kalipay ug kahimsog nga imong gitinguha. I’ll be here to support you in every step of your journey. Enjoy your day to the fullest, and know that you are cherished beyond measure. I love you more than words can say, lalovee nakoo! ",
+            "From the very first moment we met, I knew there was something truly special about you. Every day since then has been a beautiful journey of love, laughter, and endless moments of happiness. Imong kaayo, pagkahumok sa kasingkasing, ug imong pagkamatinud-anon mao ang mga butang nga naghatag ug kalipay sa akong kinabuhi. You’ve made my life so much better just by being yourself. Today, I want to remind you of the incredible person you are.I’m honored to be the one you’ve chosen to share your life with. Sa tanan nga panahon nga mag-uban ta, ang akong pasalig mao ang paghatag ug kalipay ug suporta kanimo, bisan sa kalisod ug kasakit. You are deserving of all the good things life has to offer, and I can’t wait to see you reach new heights in your journey. May this year be full of new adventures, dreams coming true, and an abundance of love and happiness. I’m here, always, to walk beside you, to encourage you, and to love you with all my heart. I hope your day is as beautiful and extraordinary as you are. Happy Birthday, my love! ",
+            "Every single day with you feels like a blessing. The way you love, the way you care, and the way you make every moment unforgettable fills my heart with joy and appreciation. You are the light of my life, and I cannot imagine a future without you in it. Salamat sa imong pagpaningkamot, sa imong pagkamaayo ug pagka-mahal, ug sa imong pagtabang kanako sa pagtan-aw sa kinabuhi sa lain-laing mga pamaagi. You make my life so much richer and fuller just by being you. As I reflect on our time together, I feel so grateful for all the memories we’ve created (bisag kadiyot and panagsa ra ta magkita). From the quiet moments to the loud laughs, each one is a treasure I hold close to my heart. This special day is all about celebrating you, the incredible person you are. You deserve nothing less than a life filled with love, success, and all the beautiful things this world has to offer. I hope this year brings you closer to your dreams, and that your heart is filled with all the joy you bring into mine. I will always be here for you—through the highs and the lows, I’ll support you, love you, and be your biggest cheerleader. Enjoy every moment of your day, because you truly deserve it. I love you more than words could ever express, bebeee!",
+            "There are no words that can fully express how much you mean to me. Today is your special day, and I want to celebrate the incredible person you are. From the first time we met, you’ve captured my heart in ways I never imagined. Your smile lights up my world, and your kindness touches everyone you meet. Imong gugma, imong pagkamatinud-anon, ug imong pasensya mao ang mga butang nga nagpuno sa akong kinabuhi ug nagpahimo sa akong adlaw matag-adlaw. Every moment I spend with you is precious, and I’m so thankful for the love we share. Sa tanan nga mga pagsuway, ikaw ang akong kasaligan, ug bisan unsang kalipay o kasakit, andam ko nga mag-uban uban nimo. I will always be here for you, cheering you on, and supporting your dreams. I pray that this year brings you the fulfillment of everything you’ve worked so hard for, and I will continue to stand by your side no matter where life takes us. I love you more than you can imagine, and I hope your day is filled with all the love and happiness you deserve. Happy Birthday, my love!",
+            "Every single day with you feels like a gift, and today, on your birthday, I want to remind you just how special you are to me. From your laughter to the way you care for others, everything about you leaves a lasting impact on everyone around you. Imong pagka-mahigugmaon ug pagkahumok sa kasingkasing naghimo kanimo nga usa ka espesyal nga tawo, ug mao kini ang usa sa mga butang nga nagpa-mahal kanimo sa akong mata. I am so proud of you—of your strength, your perseverance, and your unwavering determination to chase your dreams. No matter what challenges life may throw at you, I know you’ll face them with grace and courage. Hinaut nga matagamtam nimo ang kalipay ug kalampusan sa tanan nimong buhaton. On this special day, I want to remind you that I will always be here for you. As we continue to make memories together, I promise to love you more every single day. You are my heart, my happiness, and the best part of my life. I love you, Shiera Mae, and I hope your birthday is as incredible as you are!",
+            "I can’t express enough how grateful I am to have you in my life. You are my heart’s greatest joy, my closest companion, and my biggest source of strength. Every day I spend with you reminds me how much I’ve been blessed. Sa imong mga mata, makita nako ang kalipay ug ang kinabuhi nga puno sa kahulugan. You make every day better, and for that, I am so thankful. I will forever cherish every moment we’ve shared, and I look forward to all the future adventures that await us. You have a heart full of dreams, and I can’t wait to see you chase them all. Sa imong pagkahumanon ug kalig-on, wala’y limitasyon sa imong mga pangandoy, ug magpapadayon ko sa pag-suporta kanimo bisan unsang mahitabo. Today, as we celebrate you, I want to remind you that you are loved beyond measure. I’ll always stand by you, through thick and thin, and I’ll love you with all my heart. Enjoy every moment of your special day, and know that I am here—today and always—cheering for you. Happy Birthday, amor! "
+        ];
+
+        // Shuffle messages for a surprise element
+        messages.sort(() => Math.random() - 0.5);
+
+        // Create 18 gifts
+        const giftGrid = document.getElementById('giftGrid');
+        const overlay = document.getElementById('overlay');
+
+        if (!giftGrid || !overlay) {
+            console.error('Required elements not found');
+        } else {
+            messages.forEach((msg, index) => {
+                const gift = document.createElement('div');
+                gift.className = 'gift';
+                gift.setAttribute('role', 'button');
+                gift.setAttribute('aria-label', `Open gift ${index + 1}`);
+                gift.innerHTML = `
+                    <div class="gift-box">
+                        <div class="ribbon"></div>
+                        <div class="bow"></div>
+                        <div class="gift-number">${index + 1}</div>
+                    </div>
+                `;
+                giftGrid.appendChild(gift);
+            });
+
+            // Event delegation for gift clicks
+            giftGrid.addEventListener('click', (e) => {
+                const gift = e.target.closest('.gift');
+                if (gift) {
+                    const index = Array.from(giftGrid.children).indexOf(gift);
+                    handleGiftClick(messages[index]);
+                }
+            });
+        }
+
+        function handleGiftClick(message) {
+            if (confirm(`Ablihan na nimo? ${messages.indexOf(message) + 1}? ❤️\n(Naa ra jud ni nimo...)`)) {
+                createHearts();
+                showLetter(message);
+            }
+        }
+
+        function showLetter(message) {
+            document.body.style.overflow = 'hidden'; // Disable scrolling
+            const letter = document.createElement('div');
+            letter.className = 'letter visible';
+            letter.innerHTML = `
+                <button class="close-btn" onclick="closeLetter()" aria-label="Close letter">×</button>
+                <h2 style="color: #ff3366; margin-top: 0;">18 NA JUD KA!!!! WHO IS THIS DIVA OIEE,</h2>
+                <p>${message}</p>
+                <div style="text-align: center; margin-top: 20px;">
+                    <span style="color: #ff3366; font-size: 24px;">><</span>
+                </div>
+            `;
+            document.body.appendChild(letter);
+            overlay.classList.add('visible');
+        }
+
+        function closeLetter() {
+            document.body.style.overflow = 'auto'; // Re-enable scrolling
+            document.querySelector('.letter').remove();
+            overlay.classList.remove('visible');
+        }
+
+        function createHearts() {
+            for (let i = 0; i < 5; i++) {
+                const heart = document.createElement('span');
+                heart.innerHTML = '♥';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.fontSize = (Math.random() * 30 + 20) + 'px';
+                heart.style.animationDelay = Math.random() * 2 + 's';
+                document.body.appendChild(heart);
+                
+                setTimeout(() => heart.remove(), 3000);
+            }
+        }
+    </script>
+</body>
+</html>
