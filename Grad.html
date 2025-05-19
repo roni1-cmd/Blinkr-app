@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Happy grad!</title>
+    <!-- Poppins Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Handwriting Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vuetify/2.3.0-beta.6/vuetify.min.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <div class="container">
+        <div class="album" :class="{'album--open': isOpenedTop}">
+          <!-- Strawberry decorations - now bigger -->
+          <div class="strawberry strawberry-1"></div>
+          <div class="strawberry strawberry-2"></div>
+          <div class="strawberry strawberry-3"></div>
+          <div class="strawberry strawberry-4"></div>
+          
+          <div
+            class="album__paper"
+            :style="{zIndex: isOpenedTop ? 0 : items.length + 1 }"
+            :class="{'open': isOpenedTop}"
+            @click="topOpen(isOpenedTop)">
+            <div
+              class="album__page front"
+              :style="{transform: `translateZ(0.${items.length + 1}px)`}">
+              <div class="cover-container">
+                <div class="album__top-title">Gift nako nimo</div>
+                <p class="txt-names">loveu xiao  long bao</p>
+                <div class="strawberry-icon top-left"></div>
+                <div class="strawberry-icon top-right"></div>
+                <div class="cover-image-container">
+                  <img src="Shie.jpeg" class="cover-image" alt="Roni and Shie">
+                  <div class="tape tape-top-left"></div>
+                  <div class="tape tape-top-right"></div>
+                  <div class="tape tape-bottom-left"></div>
+                  <div class="tape tape-bottom-right"></div>
+                </div>
+                <div class="strawberry-icon bottom-left"></div>
+                <div class="strawberry-icon bottom-right"></div>
+                <div class="handwritten-note">mga pics nga naa sako gallery</div>
+              </div>
+            </div>
+            <div class="album__page back" :style="{zIndex: 0}"></div>
+          </div>
+          <div
+            class="album__paper"
+            v-for="(page, idx) in items"
+            :key="idx + 1"
+            :style="{zIndex: page.isOpen ? idx + 1 : items.length + 1 - (idx + 1) }"
+            :class="{'open': page.isOpen}"
+            @click="idx + 1 === items.length ? reset() : open(idx, page.isOpen)">
+            <div
+              class="album__page front"
+              :style="{transform: `translateZ(0.${items.length + 1 - (idx + 1)}px)`}">
+              <div class="content" :class="'layout-' + (page.layout || 'default')">
+                <div class="content__title">
+                  {{ page.title }}
+                  <div class="strawberry-mini"></div>
+                </div>
+                
+                <!-- Default Layout (3 images) -->
+                <template v-if="!page.layout || page.layout === 'default'">
+                  <div class="content__img1 scrapbook-item">
+                    <div class="polaroid">
+                      <img :src="page.img1" />
+                      <div class="paperclip"></div>
+                      <div class="handwritten-caption">{{ page.desc1 || 'Beautiful memories' }}</div>
+                    </div>
+                  </div>
+                  <div class="content__img2 scrapbook-item">
+                    <div class="polaroid">
+                      <img :src="page.img2" />
+                      <div class="tape tape-top-right"></div>
+                      <div class="handwritten-caption">{{ page.desc2 || 'Special moments' }}</div>
+                    </div>
+                  </div>
+                </template>
+                
+                <!-- Layout 1 (1 big image) -->
+                <template v-if="page.layout === 'single'">
+                  <div class="content__img-full scrapbook-item">
+                    <div class="polaroid polaroid-large">
+                      <img :src="page.img1" />
+                      <div class="tape tape-top-left"></div>
+                      <div class="tape tape-bottom-right"></div>
+                      <div class="handwritten-caption">{{ page.desc1 || 'Beautiful memories' }}</div>
+                    </div>
+                  </div>
+                </template>
+                
+                <!-- Layout 2 (4 images grid) -->
+                <template v-if="page.layout === 'grid'">
+                  <div class="content__img-grid scrapbook-item">
+                    <div class="grid-container">
+                      <div class="grid-item">
+                        <img :src="page.img1" />
+                        <div class="tape tape-corner"></div>
+                      </div>
+                      <div class="grid-item">
+                        <img :src="page.img2" />
+                        <div class="paperclip paperclip-right"></div>
+                      </div>
+                      <div class="grid-item">
+                        <img :src="page.img3" />
+                        <div class="tape tape-corner"></div>
+                      </div>
+                      <div class="grid-item">
+                        <img :src="page.img4" />
+                        <div class="paperclip"></div>
+                      </div>
+                    </div>
+                    <div class="handwritten-caption grid-caption">{{ page.desc1 || 'Beautiful memories' }}</div>
+                  </div>
+                </template>
+                
+                <!-- Layout 3 (2 images side by side) -->
+                <template v-if="page.layout === 'duo'">
+                  <div class="content__img-duo scrapbook-item">
+                    <div class="duo-container">
+                      <div class="duo-item">
+                        <div class="polaroid">
+                          <img :src="page.img1" />
+                          <div class="tape tape-top-left"></div>
+                          <div class="handwritten-caption">{{ page.desc1 || 'Beautiful memories' }}</div>
+                        </div>
+                      </div>
+                      <div class="duo-item">
+                        <div class="polaroid">
+                          <img :src="page.img2" />
+                          <div class="paperclip"></div>
+                          <div class="handwritten-caption">{{ page.desc2 || 'Special moments' }}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </template>
+                
+                <div class="scrapbook-sticker" v-if="idx % 3 === 0"></div>
+                <div class="scrapbook-sticker2" v-if="idx % 3 === 1"></div>
+                <div class="scrapbook-sticker3" v-if="idx % 3 === 2"></div>
+              </div>
+            </div>
+            <div class="album__page back" :style="{zIndex: idx + 1}"></div>
+          </div>
+          <div class="album__back"></div>
+          <div class="album__bottom"></div>
+          <div class="album__shadow"></div>
+        </div>
+      </div>
+    </div>
+<style>
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+body {
+  color: #333;
+  font-family: 'Poppins', sans-serif;
+  background: #fff5f7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  position: relative;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+*:before,
+*:after {
+  content: "";
+  position: absolute;
+}
+
+.container {
+  margin: auto;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* Strawberry decorations - now bigger */
+.strawberry {
+  position: absolute;
+  width: 100px; /* Increased from 60px */
+  height: 100px; /* Increased from 60px */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%23ff4757' d='M350.85 129.19c-35.91 0-68.59 13.44-93.5 35.59a129.12 129.12 0 0 0-93.5-35.59c-71.68 0-129.85 58.17-129.85 129.85 0 141.38 223.35 223.35 223.35 223.35s223.35-82 223.35-223.35c0-71.68-58.17-129.85-129.85-129.85z'/%3E%3Cpath fill='%23ff6b6b' d='M350.85 129.19c-35.91 0-68.59 13.44-93.5 35.59a129.12 129.12 0 0 0-93.5-35.59c-3.61 0-7.17.15-10.69.44 68.04 5.66 121.5 62.53 121.5 131.91 0 73.31-59.44 132.75-132.75 132.75-3.61 0-7.17-.15-10.69-.44 68.04-5.66 121.5 62.53 121.5 131.91 0 73.31-59.44 132.75-132.75 132.75-3.61 0-7.17.15-10.69.44 68.04 5.66 121.5 62.53 121.5 131.91 0 73.31-59.44 132.75-132.75 132.75-3.61 0-7.17-.15-10.69-.44 68.04-5.66 121.5-62.53 121.5-131.91 0-73.31-59.44-132.75-132.75-132.75z'/%3E%3Cpath fill='%23ff6b6b' d='M257.35 164.78a129.12 129.12 0 0 1 93.5-35.59c71.68 0 129.85 58.17 129.85 129.85 0 141.38-223.35 223.35-223.35 223.35S34 400.42 34 259.04c0-71.68 58.17-129.85 129.85-129.85 35.91 0 68.59 13.44 93.5 35.59z'/%3E%3Cpath fill='%23ff4757' d='M257.35 164.78a129.12 129.12 0 0 1 93.5-35.59c3.61 0 7.17.15 10.69.44-68.04 5.66-121.5 62.53-121.5 131.91 0 73.31 59.44 132.75 132.75 132.75 3.61 0 7.17-.15 10.69-.44-68.04-5.66-121.5-62.53-121.5-131.91 0-73.31 59.44-132.75 132.75-132.75 3.61 0 7.17.15 10.69.44-68.04 5.66-121.5 62.53-121.5 131.91 0 73.31 59.44 132.75 132.75 132.75 3.61 0 7.17-.15 10.69-.44-68.04-5.66-121.5-62.53-121.5-131.91 0-73.31 59.44-132.75 132.75-132.75z'/%3E%3Cpath fill='%2300b894' d='M257.35 29.61v135.17a129.12 129.12 0 0 0-93.5-35.59c-71.68 0-129.85 58.17-129.85 129.85 0 141.38 223.35 223.35 223.35 223.35s223.35-82 223.35-223.35c0-71.68-58.17-129.85-129.85-129.85a129.12 129.12 0 0 0-93.5 35.59V29.61z'/%3E%3Cpath fill='%2300b894' d='M291.31 29.61h-67.92v135.17a129.12 129.12 0 0 1 93.5-35.59c3.61 0 7.17.15 10.69.44-68.04 5.66-121.5 62.53-121.5 131.91 0 73.31 59.44 132.75 132.75 132.75 3.61 0 7.17-.15 10.69-.44-68.04-5.66-121.5-62.53-121.5-131.91 0-73.31 59.44-132.75 132.75-132.75h-69.46z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  z-index: 1000;
+}
+
+.strawberry-1 {
+  top: 5%;
+  left: 5%;
+  transform: rotate(-15deg);
+}
+
+.strawberry-2 {
+  top: 10%;
+  right: 5%;
+  transform: rotate(15deg);
+}
+
+.strawberry-3 {
+  bottom: 10%;
+  left: 10%;
+  transform: rotate(-30deg);
+}
+
+.strawberry-4 {
+  bottom: 5%;
+  right: 10%;
+  transform: rotate(30deg);
+}
+
+.strawberry-icon {
+  position: absolute;
+  width: 60px; /* Increased from 40px */
+  height: 60px; /* Increased from 40px */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%23ff4757' d='M350.85 129.19c-35.91 0-68.59 13.44-93.5 35.59a129.12 129.12 0 0 0-93.5-35.59c-71.68 0-129.85 58.17-129.85 129.85 0 141.38 223.35 223.35 223.35 223.35s223.35-82 223.35-223.35c0-71.68-58.17-129.85-129.85-129.85z'/%3E%3Cpath fill='%23ff6b6b' d='M350.85 129.19c-35.91 0-68.59 13.44-93.5 35.59a129.12 129.12 0 0 0-93.5-35.59c-3.61 0-7.17.15-10.69.44 68.04 5.66 121.5 62.53 121.5 131.91 0 73.31-59.44 132.75-132.75 132.75-3.61 0-7.17-.15-10.69-.44 68.04-5.66 121.5 62.53 121.5 131.91 0 73.31-59.44 132.75-132.75 132.75-3.61 0-7.17.15-10.69.44 68.04 5.66 121.5 62.53 121.5 131.91 0 73.31-59.44 132.75-132.75 132.75-3.61 0-7.17-.15-10.69-.44 68.04-5.66 121.5-62.53 121.5-131.91 0-73.31-59.44-132.75-132.75-132.75z'/%3E%3Cpath fill='%23ff6b6b' d='M257.35 164.78a129.12 129.12 0 0 1 93.5-35.59c71.68 0 129.85 58.17 129.85 129.85 0 141.38-223.35 223.35-223.35 223.35S34 400.42 34 259.04c0-71.68 58.17-129.85 129.85-129.85 35.91 0 68.59 13.44 93.5 35.59z'/%3E%3Cpath fill='%23ff4757' d='M257.35 164.78a129.12 129.12 0 0 1 93.5-35.59c3.61 0 7.17.15 10.69.44-68.04 5.66-121.5 62.53-121.5 131.91 0 73.31 59.44 132.75 132.75 132.75 3.61 0 7.17-.15 10.69-.44-68.04-5.66-121.5-62.53-121.5-131.91 0-73.31 59.44-132.75 132.75-132.75 3.61 0 7.17.15 10.69.44-68.04 5.66-121.5 62.53-121.5 131.91 0 73.31 59.44 132.75 132.75 132.75 3.61 0 7.17-.15 10.69-.44-68.04-5.66-121.5-62.53-121.5-131.91 0-73.31 59.44-132.75 132.75-132.75z'/%3E%3Cpath fill='%2300b894' d='M257.35 29.61v135.17a129.12 129.12 0 0 0-93.5-35.59c-71.68 0-129.85 58.17-129.85 129.85 0 141.38 223.35 223.35 223.35 223.35s223.35-82 223.35-223.35c0-71.68-58.17-129.85-129.85-129.85a129.12 129.12 0 0 0-93.5 35.59V29.61z'/%3E%3Cpath fill='%2300b894' d='M291.31 29.61h-67.92v135.17a129.12 129.12 0 0 1 93.5-35.59c3.61 0 7.17.15 10.69.44-68.04 5.66-121.5 62.53-121.5 131.91 0 73.31 59.44 132.75 132.75 132.75 3.61 0 7.17-.15 10.69-.44-68.04-5.66-121.5-62.53-121.5-131.91 0-73.31 59.44-132.75 132.75-132.75h-69.46z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  z-index: 10;
+}
+
+.top-left {
+  top: 20px;
+  left: 20px;
+  transform: rotate(-15deg);
+}
+
+.top-right {
+  top: 20px;
+  right: 20px;
+  transform: rotate(15deg);
+}
+
+.bottom-left {
+  bottom: 20px;
+  left: 20px;
+  transform: rotate(-30deg);
+}
+
+.bottom-right {
+  bottom: 20px;
+  right: 20px;
+  transform: rotate(30deg);
+}
+
+.strawberry-mini {
+  display: inline-block;
+  width: 40px; /* Increased from 30px */
+  height: 40px; /* Increased from 30px */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%23ff4757' d='M350.85 129.19c-35.91 0-68.59 13.44-93.5 35.59a129.12 129.12 0 0 0-93.5-35.59c-71.68 0-129.85 58.17-129.85 129.85 0 141.38 223.35 223.35 223.35 223.35s223.35-82 223.35-223.35c0-71.68-58.17-129.85-129.85-129.85z'/%3E%3Cpath fill='%23ff6b6b' d='M350.85 129.19c-35.91 0-68.59 13.44-93.5 35.59a129.12 129.12 0 0 0-93.5-35.59c-3.61 0-7.17.15-10.69.44 68.04 5.66 121.5 62.53 121.5 131.91 0 73.31-59.44 132.75-132.75 132.75-3.61 0-7.17-.15-10.69-.44 68.04-5.66 121.5 62.53 121.5 131.91 0 73.31-59.44 132.75-132.75 132.75-3.61 0-7.17.15-10.69.44 68.04 5.66 121.5 62.53 121.5 131.91 0 73.31-59.44 132.75-132.75 132.75-3.61 0-7.17-.15-10.69-.44 68.04-5.66 121.5-62.53 121.5-131.91 0-73.31-59.44-132.75-132.75-132.75z'/%3E%3Cpath fill='%23ff6b6b' d='M257.35 164.78a129.12 129.12 0 0 1 93.5-35.59c71.68 0 129.85 58.17 129.85 129.85 0 141.38-223.35 223.35-223.35 223.35S34 400.42 34 259.04c0-71.68 58.17-129.85 129.85-129.85 35.91 0 68.59 13.44 93.5 35.59z'/%3E%3Cpath fill='%23ff4757' d='M257.35 164.78a129.12 129.12 0 0 1 93.5-35.59c3.61 0 7.17.15 10.69.44-68.04 5.66-121.5 62.53-121.5 131.91 0 73.31 59.44 132.75 132.75 132.75 3.61 0 7.17-.15 10.69-.44-68.04-5.66-121.5-62.53-121.5-131.91 0-73.31 59.44-132.75 132.75-132.75 3.61 0 7.17.15 10.69.44-68.04 5.66-121.5 62.53-121.5 131.91 0 73.31 59.44 132.75 132.75 132.75 3.61 0 7.17-.15 10.69-.44-68.04-5.66-121.5-62.53-121.5-131.91 0-73.31 59.44-132.75 132.75-132.75z'/%3E%3Cpath fill='%2300b894' d='M257.35 29.61v135.17a129.12 129.12 0 0 0-93.5-35.59c-71.68 0-129.85 58.17-129.85 129.85 0 141.38 223.35 223.35 223.35 223.35s223.35-82 223.35-223.35c0-71.68-58.17-129.85-129.85-129.85a129.12 129.12 0 0 0-93.5 35.59V29.61z'/%3E%3Cpath fill='%2300b894' d='M291.31 29.61h-67.92v135.17a129.12 129.12 0 0 1 93.5-35.59c3.61 0 7.17.15 10.69.44-68.04 5.66-121.5 62.53-121.5 131.91 0 73.31 59.44 132.75 132.75 132.75 3.61 0 7.17-.15 10.69-.44-68.04-5.66-121.5-62.53-121.5-131.91 0-73.31 59.44-132.75 132.75-132.75h-69.46z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  vertical-align: middle;
+  margin-left: 10px;
+}
+
+/* Scrapbook Elements */
+.tape {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transform: rotate(-5deg);
+}
+
+.tape-top-left {
+  width: 80px;
+  height: 25px;
+  top: -10px;
+  left: 20px;
+  transform: rotate(-45deg);
+}
+
+.tape-top-right {
+  width: 80px;
+  height: 25px;
+  top: -10px;
+  right: 20px;
+  transform: rotate(45deg);
+}
+
+.tape-bottom-left {
+  width: 80px;
+  height: 25px;
+  bottom: -10px;
+  left: 20px;
+  transform: rotate(45deg);
+}
+
+.tape-bottom-right {
+  width: 80px;
+  height: 25px;
+  bottom: -10px;
+  right: 20px;
+  transform: rotate(-45deg);
+}
+
+.tape-corner {
+  width: 60px;
+  height: 20px;
+  top: -5px;
+  left: 10px;
+  transform: rotate(-45deg);
+}
+
+.paperclip {
+  position: absolute;
+  width: 30px;
+  height: 60px;
+  top: -20px;
+  left: 20px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  z-index: 10;
+}
+
+.paperclip-right {
+  left: auto;
+  right: 20px;
+  transform: scaleX(-1);
+}
+
+.handwritten-note {
+  font-family: 'Caveat', cursive;
+  font-size: 2.5rem;
+  color: #d81b60;
+  transform: rotate(-5deg);
+  margin-top: 20px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.handwritten-caption {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5rem;
+  color: #d81b60;
+  text-align: center;
+  padding: 10px;
+  transform: rotate(-2deg);
+}
+
+.grid-caption {
+  margin-top: 15px;
+}
+
+.scrapbook-sticker {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  bottom: 30px;
+  right: 30px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%23ffcc80' d='M256 0C114.84 0 0 114.84 0 256s114.84 256 256 256 256-114.84 256-256S397.16 0 256 0zm0 448c-105.87 0-192-86.13-192-192S150.13 64 256 64s192 86.13 192 192-86.13 192-192 192z'/%3E%3Cpath fill='%23ffcc80' d='M256 128c-70.58 0-128 57.42-128 128s57.42 128 128 128 128-57.42 128-128-57.42-128-128-128zm0 192c-35.29 0-64-28.71-64-64s28.71-64 64-64 64 28.71 64 64-28.71 64-64 64z'/%3E%3Cpath fill='%23ffb74d' d='M256 64c-105.87 0-192 86.13-192 192s86.13 192 192 192 192-86.13 192-192S361.87 64 256 64zm0 320c-70.58 0-128-57.42-128-128s57.42-128 128-128 128 57.42 128 128-57.42 128-128 128z'/%3E%3Cpath fill='%23ff9800' d='M256 192c-35.29 0-64 28.71-64 64s28.71 64 64 64 64-28.71 64-64-28.71-64-64-64z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  transform: rotate(15deg);
+  z-index: 10;
+}
+
+.scrapbook-sticker2 {
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  top: 40px;
+  left: 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%23e91e63' d='M256 0C114.84 0 0 114.84 0 256s114.84 256 256 256 256-114.84 256-256S397.16 0 256 0zm0 448c-105.87 0-192-86.13-192-192S150.13 64 256 64s192 86.13 192 192-86.13 192-192 192z'/%3E%3Cpath fill='%23e91e63' d='M256 128c-70.58 0-128 57.42-128 128s57.42 128 128 128 128-57.42 128-128-57.42-128-128-128zm0 192c-35.29 0-64-28.71-64-64s28.71-64 64-64 64 28.71 64 64-28.71 64-64 64z'/%3E%3Cpath fill='%23c2185b' d='M256 64c-105.87 0-192 86.13-192 192s86.13 192 192 192 192-86.13 192-192S361.87 64 256 64zm0 320c-70.58 0-128-57.42-128-128s57.42-128 128-128 128 57.42 128 128-57.42 128-128 128z'/%3E%3Cpath fill='%23ad1457' d='M256 192c-35.29 0-64 28.71-64 64s28.71 64 64 64 64-28.71 64-64-28.71-64-64-64z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  transform: rotate(-10deg);
+  z-index: 10;
+}
+
+.scrapbook-sticker3 {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  bottom: 50px;
+  left: 50px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%238bc34a' d='M256 0C114.84 0 0 114.84 0 256s114.84 256 256 256 256-114.84 256-256S397.16 0 256 0zm0 448c-105.87 0-192-86.13-192-192S150.13 64 256 64s192 86.13 192 192-86.13 192-192 192z'/%3E%3Cpath fill='%238bc34a' d='M256 128c-70.58 0-128 57.42-128 128s57.42 128 128 128 128-57.42 128-128-57.42-128-128-128zm0 192c-35.29 0-64-28.71-64-64s28.71-64 64-64 64 28.71 64 64-28.71 64-64 64z'/%3E%3Cpath fill='%237cb342' d='M256 64c-105.87 0-192 86.13-192 192s86.13 192 192 192 192-86.13 192-192S361.87 64 256 64zm0 320c-70.58 0-128-57.42-128-128s57.42-128 128-128 128 57.42 128 128-57.42 128-128 128z'/%3E%3Cpath fill='%23689f38' d='M256 192c-35.29 0-64 28.71-64 64s28.71 64 64 64 64-28.71 64-64-28.71-64-64-64z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  transform: rotate(20deg);
+  z-index: 10;
+}
+
+.album {
+  transform-style: preserve-3d;
+  transition: 1s;
+  margin: auto;
+  width: 800px;
+  height: 900px;
+  transform: scale(0.7);
+  cursor: pointer;
+  position: relative;
+}
+
+.cover-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  position: relative;
+  background-color: #ff80ab;
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+}
+
+.cover-image-container {
+  width: 90%;
+  height: 70%;
+  overflow: hidden;
+  position: relative;
+  border: 15px solid #fff;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  margin-top: 20px;
+  background-color: #fff;
+}
+
+.cover-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.5s ease;
+}
+
+.cover-image:hover {
+  transform: scale(1.05);
+}
+
+.txt-names {
+  color: #fff;
+  font-size: 4rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+}
+
+.album--open {
+  transform: translate(65px, 0) rotateX(35deg) rotateY(0deg) rotateZ(35deg)
+    scale(0.7);
+}
+
+.album__paper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: 1s;
+  transform-origin: 0 50%;
+  transform-style: preserve-3d;
+}
+
+.album__paper:not(.first) .album__page {
+  background: #fff1f5;
+  background-image: url("data:image/svg+xml,%3Csvg width='52' height='26' viewBox='0 0 52 26' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ff80ab' fill-opacity='0.1'%3E%3Cpath d='M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6h-2c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h-2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6h2c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6H6c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6h2c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h-2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6h2c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h-2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6h2c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h-2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6h2c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.album__paper:not(.first) .back {
+  background: #ffe0eb;
+}
+
+.album__paper:nth-of-type(1) .back {
+  background: #ff80ab;
+}
+
+.album__paper:nth-of-type(1) .album__page {
+  background: #ff80ab;
+}
+
+.album__paper.open {
+  box-shadow: 0 1em 0 0 #ffb6c1;
+  transform: rotateX(0) rotateY(-180deg) rotateZ(0);
+}
+
+.album__paper .album__page.front {
+  transition: 1s;
+  -webkit-transition: 1s;
+  transform-origin: 0 50%;
+  -webkit-transform-origin: 0 50%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  z-index: 2;
+}
+
+.album__paper .back {
+  transition: 1s;
+  -webkit-transition: 1s;
+  transform-origin: 0 50%;
+  -webkit-transform-origin: 0 50%;
+  background: #ffe0eb;
+}
+
+.album__top-title {
+  font-size: 6rem;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+  margin-bottom: 10px;
+}
+
+.album__page {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  transform: translateZ(0px);
+}
+
+.album__back {
+  width: 3em;
+  height: 900px;
+  background: #f06292;
+  position: absolute;
+  left: -3em;
+  top: 0;
+  transform-origin: 100% 100%;
+  -webkit-transform-origin: 100% 100%;
+  transform: rotateY(-90deg) rotateX(0deg);
+  -webkit-transform: rotateY(-90deg) rotateX(0deg);
+}
+
+.album__shadow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 800px;
+  height: 900px;
+  background: transparent;
+  transform: translateZ(-3em);
+  -webkit-transform: translateZ(-3em);
+  box-shadow: 1em 1em 0px 0px #ffb6c1;
+  z-index: 1;
+}
+
+.album__bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 800px;
+  height: 3em;
+  background: #ffe0eb;
+  transform-origin: 100% 100%;
+  -webkit-transform-origin: 100% 100%;
+  transform: rotateX(90deg);
+  -webkit-transform: rotateX(90deg);
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-template-rows: 100px auto;
+  height: 100%;
+  gap: 15px;
+  padding: 20px;
+  position: relative;
+}
+
+.content__title {
+  grid-row: 1;
+  grid-column: 1/3;
+  font-size: 4rem;
+  font-weight: 600;
+  color: #d81b60;
+  padding: 10px 20px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Scrapbook Items */
+.scrapbook-item {
+  position: relative;
+}
+
+.polaroid {
+  background: #fff;
+  padding: 15px 15px 40px 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  transform: rotate(-2deg);
+  transition: all 0.3s ease;
+}
+
+.polaroid:hover {
+  transform: rotate(0) scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.polaroid-large {
+  padding: 20px 20px 60px 20px;
+}
+
+.polaroid img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border: 1px solid #eee;
+}
+
+.polaroid-large img {
+  height: 500px;
+}
+
+/* Default Layout */
+.content__img1 {
+  grid-row: 2;
+  grid-column: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
+}
+
+.content__img2 {
+  grid-row: 2;
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
+}
+
+.content__img3 {
+  grid-row: 3;
+  grid-column: 1/3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
+}
+
+/* Single Layout */
+.content__img-full {
+  grid-row: 2/4;
+  grid-column: 1/3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
+}
+
+/* Grid Layout */
+.content__img-grid {
+  grid-row: 2/4;
+  grid-column: 1/3;
+  padding: 15px;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 20px;
+  height: 600px;
+}
+
+.grid-item {
+  position: relative;
+  background: #fff;
+  padding: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.grid-item:nth-child(odd) {
+  transform: rotate(-2deg);
+}
+
+.grid-item:nth-child(even) {
+  transform: rotate(2deg);
+}
+
+.grid-item:hover {
+  transform: rotate(0) scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  z-index: 5;
+}
+
+.grid-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Duo Layout */
+.content__img-duo {
+  grid-row: 2/4;
+  grid-column: 1/3;
+  padding: 15px;
+}
+
+.duo-container {
+  display: flex;
+  justify-content: space-around;
+  height: 600px;
+}
+
+.duo-item {
+  width: 45%;
+  display: flex;
+  align-items: center;
+}
+
+.duo-item .polaroid {
+  width: 100%;
+}
+
+.duo-item .polaroid img {
+  height: 400px;
+}
+
+/* Improved Mobile Responsiveness */
+@media screen and (max-width: 1200px) {
+  .album {
+    transform: scale(0.6);
+  }
+  
+  .album--open {
+    transform: translate(65px, 0) rotateX(35deg) rotateY(0deg) rotateZ(35deg) scale(0.6);
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .album {
+    transform: scale(0.5);
+  }
+  
+  .album--open {
+    transform: translate(65px, 0) rotateX(35deg) rotateY(0deg) rotateZ(35deg) scale(0.5);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  body {
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: auto;
+  }
+  
+  .container {
+    padding: 10px;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .album {
+    transform: scale(0.4);
+    margin: 0 auto;
+  }
+  
+  .album--open {
+    transform: translate(40px, 0) rotateX(35deg) rotateY(0deg) rotateZ(35deg) scale(0.4);
+  }
+  
+  .strawberry {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .album {
+    transform: scale(0.3);
+  }
+  
+  .album--open {
+    transform: translate(30px, 0) rotateX(35deg) rotateY(0deg) rotateZ(35deg) scale(0.3);
+  }
+  
+  .content__title {
+    font-size: 3.5rem;
+  }
+  
+  .txt-names {
+    font-size: 3.5rem;
+  }
+  
+  .album__top-title {
+    font-size: 5rem;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .album {
+    transform: scale(0.25);
+  }
+  
+  .album--open {
+    transform: translate(20px, 0) rotateX(35deg) rotateY(0deg) rotateZ(35deg) scale(0.25);
+  }
+}
+</style>
+<script>
+new Vue({
+  el: "#app",
+  data() {
+    return {
+      isOpenedTop: true,
+      items: [
+        {
+          img1: "1.jpeg",
+          img2: "3.jpg",
+          img3: "4.jpg",
+          title: "GWAPA",
+          desc1: "Sweet as strawberries, beautiful smile that brightens my day",
+          desc2: "Capturing moments of pure joy and sweetness",
+          desc3: "Every photo tells our story, fresh and vibrant",
+          isOpen: false,
+        },
+        {
+          img1: "5.jpg",
+          img2: "6.jpg",
+          img3: "7.jpg",
+          title: "GWAPA PUD",
+          desc1: "Adventures together are always better, like strawberry fields",
+          desc2: "Your laughter is my favorite sound, sweet as summer berries",
+          desc3: "Creating memories that last forever, ripe with happiness",
+          isOpen: false,
+        },
+        {
+          layout: "single",
+          img1: "11.jpg",
+          title: "SPECIAL MOMENT",
+          desc1: "This day was perfect - just like you. Every moment with you feels like a dream.",
+          isOpen: false,
+        },
+        {
+          layout: "grid",
+          img1: "12.jpg",
+          img2: "13.jpg",
+          img3: "14.jpg",
+          img4: "15.jpg",
+          title: "SWEET COLLECTION",
+          desc1: "A collection of our sweetest moments together, each one precious and perfect",
+          isOpen: false,
+        },
+        {
+          img1: "16.jpg",
+          img2: "17.jpg",
+          img3: "18.jpg",
+          title: "GWAPA KAAYO",
+          desc1: "The way you look at life inspires me, fresh and beautiful",
+          desc2: "Cherishing these special moments, sweet as strawberry jam",
+          desc3: "Beauty in every angle, like perfect strawberries in summer",
+          isOpen: false,
+        },
+        {
+          layout: "duo",
+          img1: "19.jpg",
+          img2: "20.jpg",
+          title: "JUST THE TWO OF US",
+          desc1: "You and me against the world, sweet like strawberry kisses",
+          desc2: "Together is my favorite place to be, forever and always",
+          isOpen: false,
+        },
+        {
+          img1: "21.jpg",
+          img2: "22.jpg",
+          img3: "23.jpg",
+          title: "GWAPA NA PUD",
+          desc1: "Your smile lights up the room, like strawberries in sunshine",
+          desc2: "Endless love in your eyes, sweet and timeless",
+          desc3: "Perfect in every way, like the first strawberry of spring",
+          isOpen: false,
+        },
+        {
+          layout: "grid",
+          img1: "24.jpg",
+          img2: "25.jpg",
+          img3: "26.jpg",
+          img4: "27.jpg",
+          title: "BERRY SWEET MEMORIES",
+          desc1: "Four perfect moments captured in time, each one sweeter than the last",
+          isOpen: false,
+        },
+        {
+          img1: "8.jpg",
+          img2: "9.jpg",
+          img3: "10.jpg",
+          title: "GWAPA KAAYO",
+          desc1: "Radiant beauty inside and out, like strawberries in bloom",
+          desc2: "Every day with you is a blessing, sweet and precious",
+          desc3: "Our journey continues with love, ripe with possibilities",
+          isOpen: false,
+        },
+        {
+          layout: "single",
+          img1: "28.jpg",
+          title: "FOREVER LOVE",
+          desc1: "Some moments are so special they deserve their own page. This is one of those moments.",
+          isOpen: false,
+        },
+        {
+          layout: "duo",
+          img1: "29.jpg",
+          img2: "30.jpg",
+          title: "STRAWBERRY SWEETHEARTS",
+          desc1: "Two hearts beating as one, sweet as strawberries in summer",
+          desc2: "Every moment with you is a treasure I'll cherish forever",
+          isOpen: false,
+        },
+      ],
+    };
+  },
+  data() {
+    return {
+      isOpenedTop: true,
+      items: [
+        {
+          layout: "grid",
+          img1: "5.jpeg",
+          img2: "6.jpeg",
+          title: "shema kaayo da",
+          desc1: "kani kay cute kaayo ta diri, for like 2 or 3 hours ko nahuman ug build sakong lego, partida nitabang pa ka nako HAHAHAHHA but it was really fun gyud baya, it really was fun gyud babi, basta oie cute kayta",
+          desc2: "kani kay cute kaayo ta diri, for like 2 or 3 hours ko nahuman ug build sakong lego, partida nitabang pa ka nako HAHAHAHHA but it was really fun gyud baya, it really was fun gyud babi, basta oie cute kayta",
+          isOpen: false,
+        },
+        {
+          layout: "single",
+          img1: "1.jpeg",
+          title: "First",
+          desc1: "Kahinumdom ko ani nga picture, mao ni ang first date nga kita duha ra gyud. Like mao ni kadtong nilabay akong birthday, nanguan pa ta ato nga magpalaylay sa imong friends kay ganahan ka nga mag solo ta hAHAHAHHAHAH we had fun, we built legos and all.",
+          isOpen: false,
+        },
+        {
+          layout: "grid",
+          img1: "7.jpeg",
+          img2: "8.jpeg",
+          img3: "9.jpeg",
+          img4: "10.jpeg",
+          title: "compilation sa imong kagwapa",
+          isOpen: false,
+        },
+        {
+          img1: "11.jpeg",
+          img2: "12.jpeg",
+          title: "mwehehhhhee",
+          desc1: "Kani kay ang time nga nag celebrate ka sa imong birthday, yea I was zoned out but I will admit nga nalingaw ko",
+          desc2: "This was the night I first kissed you (well sa imong hand) imo kong gihatod diba HAHAHAHA I held your cake basta I was really happy gyud ana nga day, I really am",
+          isOpen: false,
+        },
+        {
+          layout: "single",
+          img1: "2.jpeg",
+          title: "hehehehxd",
+          desc1: "kahinudom na pud ko ani nga pic, mao ni kadtong padung ko immersion nya gitagaan ko nimog I think burger to HAHAHAHAHH nya kilig kayko ato nag eat kay naay nakasuwat nga I love you so much HAHAHAHAH like ambot gikilig ko",
+          isOpen: false,
+        },
+        {
+          layout: "duo",
+          img1: "3.jpeg",
+          img2: "4.jpeg",
+          title: "BWAHAHAHAHHAHA><",
+          desc1: "kani kahinudom ko HAHAHAHAHA pasimple kayka nako nihigda sa akong shoulder, like I was so kilig kay I was not expecting it at all, like ambot lang HAHAHAHAH",
+          desc2: "kani nga pic kay I remember nag immersion pa ka ani sa Guidance sa Basic Education nya kani nga time kay gihilantan ka, I really told you nga ayaw pag inom, nisunod gyud kas imong gusto, mao to niresulta hahay nako gyud shiera mae",
+          isOpen: false,
+        },
+      ],
+    };
+  },
+  methods: {
+    topOpen() {
+      this.reset();
+      this.isOpenedTop = !this.isOpenedTop;
+    },
+
+    open(idx) {
+      if (this.isOpenedTop) {
+        this.items[idx].isOpen = !this.items[idx].isOpen;
+      }
+    },
+
+    reset() {
+      this.items.forEach((item) => (item.isOpen = false));
+      this.isOpenedTop = false;
+    },
+  },
+});
+</script>
+</body>
+</html>
